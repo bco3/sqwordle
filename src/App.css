@@ -633,7 +633,10 @@ body {
 
 @media (max-width: 420px) and (orientation: portrait) {
   body {
-    font-size: clamp(0.5em, 3.35vmin, 1.5em);
+    font-size: clamp(0.5em, 3.9vmin, 2em);
+  }
+  .under-header-container{
+    padding: 1em 0.1em;
   }
   .guess-grid{
     font-size: clamp(0.5em, 4.35vmin, 2.5em);

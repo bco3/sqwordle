@@ -80,6 +80,7 @@ export const App = () => {
   ]);
   const [correctWord, setCorrectWord] = useState("error");
   const [currentStreak, setCurrentStreak] = useState(0);
+  const [todaysGameCount, setTodaysGameCount] = useState(1);
   const [position, setPosition] = useState({ row: 0, letterPosition: 0 });
   const [wordLength, setWordLength] = useState(5);
 
@@ -15706,8 +15707,15 @@ export const App = () => {
     const wordOfDay = () => {
       const offsetFromDate = new Date(2023, 1, 13);
       const msOffset = Date.now() - offsetFromDate;
-      const dayOffset = msOffset / 1000 / 60 / 60 / 24;
-      return targetWords[Math.floor(dayOffset)];
+      const dayOffset = (msOffset / 1000 / 60 / 60 / 24) * 5;
+      const offSetByGameCount = () => {
+        let i = todaysGameCount + dayOffset;
+        while (i > 2300) {
+          i = i - 2300;
+        }
+        return i;
+      };
+      return targetWords[Math.floor(offSetByGameCount())];
     };
     const resetToday = () => {
       setKeyRows([
@@ -15774,6 +15782,7 @@ export const App = () => {
       newPosition.row = 0;
       newPosition.letterPosition = 0;
       setPosition({ ...newPosition });
+      showAlert(`TODAYS GAME ${todaysGameCount}`, 4000);
       setCorrectWord(wordOfDay);
     };
     for (let i = position.row; i >= 0; i--) {
@@ -15783,7 +15792,7 @@ export const App = () => {
           setTimeout(() => {
             newTilesWin[i][index] = newTilesWin[i][index] + " flip";
             return setTiles([...newTilesWin]);
-          }, 3000 + FLIP_ANIMATION_DURATION * i + (FLIP_ANIMATION_DURATION / 2) * index);
+          }, 500 + FLIP_ANIMATION_DURATION * i + (FLIP_ANIMATION_DURATION / 2) * index);
         }
       });
     }
@@ -15796,10 +15805,13 @@ export const App = () => {
             newTilesWin[i][index - 1] = "";
             i === 0 && index === 9 && resetToday() && console.log("has reset");
             return setTiles([...newTilesWin]);
-          }, 3250 + FLIP_ANIMATION_DURATION * i + (FLIP_ANIMATION_DURATION / 2) * index);
+          }, 750 + FLIP_ANIMATION_DURATION * i + (FLIP_ANIMATION_DURATION / 2) * index);
         }
       });
     }
+    let newTodaysGameCount = todaysGameCount;
+    todaysGameCount < 5 ? newTodaysGameCount++ : (newTodaysGameCount = 1);
+    setTodaysGameCount(newTodaysGameCount);
     return;
   }
 
