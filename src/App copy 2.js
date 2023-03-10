@@ -4,6 +4,7 @@ import gsap from "gsap";
 import TimerCircle from "./TimerCircle";
 
 export const App = () => {
+  const storedData = JSON.parse(localStorage.getItem("data"));
   const targetWords = [
     "cigar",
     "rebut",
@@ -15303,201 +15304,96 @@ export const App = () => {
     ["0", "", "2", "", "1", "", "0", "", "1", ""],
     ["1", "", "0", "", "1", "", "2", "", "2", ""],
   ];
-  useEffect(() => {
-    // localStorage.clear("data");
-    if (localStorage.getItem("data") === null) {
-      localStorage.setItem("data", JSON.stringify(data));
-    }
-  }, []);
-
-  const storedData = JSON.parse(localStorage.getItem("data"));
 
   const [tiles, setTiles] = useState(
-    storedData.tiles || [
-      ["", "", "", "", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", "", "", "", ""],
-    ]
+    storedData.tiles || [["", "", "", "", "", "", "", "", "", ""]]
   );
   const [keyRows, setKeyRows] = useState(
-    storedData.keyRows || [
-      [
-        "Q",
-        "key",
-        "W",
-        "key",
-        "E",
-        "key",
-        "R",
-        "key",
-        "T",
-        "key",
-        "Y",
-        "key",
-        "U",
-        "key",
-        "I",
-        "key",
-        "O",
-        "key",
-        "P",
-        "key",
-      ],
-      [
-        "A",
-        "key",
-        "S",
-        "key",
-        "D",
-        "key",
-        "F",
-        "key",
-        "G",
-        "key",
-        "H",
-        "key",
-        "J",
-        "key",
-        "K",
-        "key",
-        "L",
-        "key",
-      ],
-      [
-        "Z",
-        "key",
-        "X",
-        "key",
-        "C",
-        "key",
-        "V",
-        "key",
-        "B",
-        "key",
-        "N",
-        "key",
-        "M",
-        "key",
-      ],
-    ]
+    storedData.keyRows || [["Q", "key", "W", "key"]]
   );
   const [correctWord, setCorrectWord] = useState(
     storedData.word ||
       targetWords[Math.floor(Math.random() * targetWords.length)]
   );
   const [currentStreak, setCurrentStreak] = useState(0);
-  // const [todaysGameCount, setTodaysGameCount] = useState(0);
   const [todaysGameSwitch, setTodaysGameSwitch] = useState(
     storedData.gameSwitch || false
   );
   const [position, setPosition] = useState(
     storedData.position || { row: 0, letterPosition: 0 }
   );
-  const [squirtleStatus, setSquirtleStatus] = useState("new-game");
+  const [squirtleStatus, setSquirtleStatus] = useState(
+    storedData.squirtleStatus || "new-game"
+  );
   const [comicBubbleDirection, setComicBubbleDirection] = useState("talk-left");
-  const [subtitles, setSubtitles] = useState("Welcome back!");
-  // const [theDay, setTheDay] = useState(0)
-  // const [timerIcon, setTimerIcon] = useState("timer-button timer-off");
+  const [subtitles, setSubtitles] = useState(
+    storedData.subtitles || "squirtle squirtle squirtle"
+  );
   const [timerDelay, setTimerDelay] = useState(storedData.timerDelay || -1);
   const [timerSwitch, setTimerSwitch] = useState(storedData.timerSwitch || -1);
 
-  const todaysGameCount = storedData.game || 1;
+  useEffect(() => {
+    if (localStorage.getItem("data") === null) {
+      localStorage.setItem("data", JSON.stringify(data));
+    }
+  }, []);
+
+  const todaysGameCount = storedData.gameNumber || 1;
   const dateDay = new Date().getDate();
   const todaysDay = storedData.today || dateDay;
 
   const [data, setData] = useState({
-    today: todaysDay,
-    game: 1,
-    allTimeHiScore: 0,
-    hiScore: 0,
-    allTimeHiScore90: 0,
-    hiScore90: 0,
-    allTimeHiScore60: 0,
-    hiScore60: 0,
-    allTimeHiScore30: 0,
-    hiScore30: 0,
-    allTimeStreak: 0,
-    streak: 0,
-    allTimeStreak90: 0,
-    streak90: 0,
-    allTimeStreak60: 0,
-    streak60: 0,
-    allTimeStreak30: 0,
-    streak30: 0,
-    position: position,
-    tiles: tiles,
-    keyRows: keyRows,
-    word: correctWord,
-    gameSwitch: todaysGameSwitch,
-    timerDelay: timerDelay,
-    timerSwitch: timerSwitch,
+    today: dateDay,
+    gameNumber: 1,
+    tiles: [["", "", "", "", "", "", "", "", "", ""]],
+    keyRows: [["Q", "key", "W", "key"]],
+    word: targetWords[Math.floor(Math.random() * targetWords.length)],
+    gameSwitch: false,
+    position: { row: 0, letterPosition: 0 },
+    squirtleStatus: "new-game",
+    subtitles: "Squirtle?",
+    timerDelay: -1,
+    timerSwitch: -1,
   });
 
   useEffect(() => {
-    setData({ ...data, position: position });
-  }, [position]);
-
-  useEffect(() => {
-    setData({ ...data, word: correctWord });
-  }, [correctWord]);
-
-  useEffect(() => {
-    setData({ ...data, gameSwitch: todaysGameSwitch });
-  }, [todaysGameSwitch]);
-
-  useEffect(() => {
-    setData({ ...data, timerDelay: timerDelay });
-  }, [timerDelay]);
-
-  useEffect(() => {
-    setData({ ...data, timerSwitch: timerSwitch });
-  }, [timerSwitch]);
-
-  useEffect(() => {
-    resetGame();
-  }, [todaysGameSwitch]);
-
-  useEffect(() => {
     localStorage.setItem("data", JSON.stringify(data));
-  }, [data, tiles, keyRows]);
+  }, [data]);
 
   useEffect(() => {
-    // setSubtitles(randomNewGameResponse());
-    // setCorrectWord(targetWords[Math.floor(Math.random() * targetWords.length)]);
+    setSubtitles(randomNewGameResponse());
+    setCorrectWord(targetWords[Math.floor(Math.random() * targetWords.length)]);
     squirtleInOut(2000);
     comicBubbleInOut(2000);
-    // if (todaysDay !== dateDay) {
-    //   setData({ ...data, game: 1, today: dateDay });
-    // }
+    if (todaysDay !== dateDay) {
+      setData({ ...storedData, game: 1, today: dateDay });
+    }
   }, []);
 
   function nextLine() {
-    if (position.row !== 5) {
-      let newPosition = { ...position };
+    if (data.position.row !== 5) {
+      let newPosition = { ...data.position };
       newPosition.row++;
       newPosition.letterPosition = 0;
-      let newTiles = [...tiles];
-      tiles[position.row].forEach((_, index) => {
+      let newTiles = [...data.tiles];
+      data.tiles[data.position.row].forEach((_, index) => {
         if (index % 2 !== 0) {
-          newTiles[position.row][index] =
-            tiles[position.row][index] + " time-up";
+          newTiles[data.position.row][index] =
+            data.tiles[data.position.row][index] + " time-up";
         } else {
-          newTiles[position.row][index] = "";
+          newTiles[data.position.row][index] = "";
         }
       });
 
-      setTiles([...newTiles]);
-      return setPosition({ ...newPosition });
+      setData({ ...data, tiles: newTiles });
+      return setData({ ...data, position: newPosition });
     }
-    setSubtitles(`${correctWord.toUpperCase()}!? hmmph!!!`);
+    setData({ ...data, subtitles: `${data.word.toUpperCase()}!? hmmph!!!` });
     setComicBubbleDirection("talk-right");
     comicBubbleInOut(5000);
-    setSquirtleStatus("sad");
+    setData({ ...data, squirtleStatus: "sad" });
     squirtleInOut(5000);
-    for (let i = position.row; i >= 0; i--) {
+    for (let i = data.position.row; i >= 0; i--) {
       let newTilesWin = [...tiles];
       newTilesWin[i].forEach((_, index) => {
         if (index % 2 !== 0) {
@@ -15508,7 +15404,7 @@ export const App = () => {
         }
       });
     }
-    for (let i = position.row; i >= 0; i--) {
+    for (let i = data.position.row; i >= 0; i--) {
       let newTilesWin = [...tiles];
       newTilesWin[i].forEach((_, index) => {
         if (index % 2 !== 0) {
@@ -15529,20 +15425,20 @@ export const App = () => {
   }
 
   function shakeWarning() {
-    tiles[position.row].forEach((_, index) => {
+    tiles[data.position.row].forEach((_, index) => {
       let newTilesShake = [...tiles];
       if (index % 2 !== 0) {
-        newTilesShake[position.row][index] =
-          newTilesShake[position.row][index] + " shake2";
+        newTilesShake[data.position.row][index] =
+          newTilesShake[data.position.row][index] + " shake2";
       }
       return setTiles([...newTilesShake]);
     });
     setTimeout(() => {
-      tiles[position.row].forEach((_, index) => {
+      tiles[data.position.row].forEach((_, index) => {
         let newTilesShake = [...tiles];
         if (index % 2 !== 0) {
-          newTilesShake[position.row][index] =
-            newTilesShake[position.row][index] - " shake2";
+          newTilesShake[data.position.row][index] =
+            newTilesShake[data.position.row][index] - " shake2";
         }
         return setTiles([...newTilesShake]);
       });
@@ -15563,6 +15459,9 @@ export const App = () => {
       ? "LETS GO!!!"
       : "I like to play";
   }
+
+  // const squirtleAnimationRef = useRef(null);
+  // const squirtleTalkRef = useRef(null);
 
   function comicBubbleInOut(delay) {
     gsap.killTweensOf(".squirtle-talk");
@@ -15643,10 +15542,10 @@ export const App = () => {
     // console.log(e);
     if (position.letterPosition >= 5 * 2 - 1) return;
     let newTiles = [...tiles];
-    newTiles[position.row][position.letterPosition] = key.toLowerCase();
-    newTiles[position.row][position.letterPosition + 1] = "active";
+    newTiles[data.position.row][position.letterPosition] = key.toLowerCase();
+    newTiles[data.position.row][position.letterPosition + 1] = "active";
     setTiles(newTiles);
-    let newPosition = { ...position };
+    let newPosition = { ...data.position };
     newPosition.letterPosition = position.letterPosition + 2;
     setPosition({ ...newPosition });
   }
@@ -15654,10 +15553,13 @@ export const App = () => {
   function deleteKey() {
     if (position.letterPosition === 0) return;
     let newTiles = [...tiles];
-    newTiles[position.row][position.letterPosition - 2] = "";
-    newTiles[position.row][position.letterPosition - 1] = "";
+    newTiles[data.position.row][position.letterPosition - 2] = "";
+    newTiles[data.position.row][position.letterPosition - 1] = "";
     setTiles(newTiles);
-    setPosition({ ...position, letterPosition: position.letterPosition - 2 });
+    setPosition({
+      ...data.position,
+      letterPosition: position.letterPosition - 2,
+    });
     console.log(position);
   }
   function submitGuess() {
@@ -15672,8 +15574,8 @@ export const App = () => {
       return;
     }
     let guess = "";
-    tiles[position.row].forEach((_, tile) => {
-      tile % 2 === 0 && (guess = guess + tiles[position.row][tile]);
+    tiles[data.position.row].forEach((_, tile) => {
+      tile % 2 === 0 && (guess = guess + tiles[data.position.row][tile]);
     });
     if (!dictionary.includes(guess)) {
       const randomWrongResponse = () => {
@@ -15703,7 +15605,7 @@ export const App = () => {
     timerSwitch > 0 && setTimerDelay(1);
     console.log(`timerDelay = ${timerDelay}`);
     // setTimeout();
-    tiles[position.row].forEach(
+    tiles[data.position.row].forEach(
       (tile, index, array) =>
         index % 2 === 0 && flipTile(tile, index, array, guess)
     );
@@ -15722,21 +15624,21 @@ export const App = () => {
     };
     setTimeout(() => {
       let newTiles = [...tiles];
-      newTiles[position.row][index + 1] =
-        tiles[position.row][index + 1] + " flip";
+      newTiles[data.position.row][index + 1] =
+        tiles[data.position.row][index + 1] + " flip";
       setTiles([...newTiles]);
       console.log(keyRows[1][2] + tile);
     }, (index * animationDuration * 2) / 3);
 
     setTimeout(() => {
       let newTiles = [...tiles];
-      newTiles[position.row][index + 1] =
-        tiles[position.row][index + 1] - " flip";
+      newTiles[data.position.row][index + 1] =
+        tiles[data.position.row][index + 1] - " flip";
       setTiles([...newTiles]);
       if (correctWord[index / 2] === tile) {
         let newTilesTested = [...tiles];
-        newTilesTested[position.row][index + 1] =
-          tiles[position.row][index + 1] + " correct";
+        newTilesTested[data.position.row][index + 1] =
+          tiles[data.position.row][index + 1] + " correct";
         setTiles([...newTilesTested]);
         let keyPosition = key();
         let newKeysTested = [...keyRows];
@@ -15745,8 +15647,8 @@ export const App = () => {
         setKeyRows([...newKeysTested]);
       } else if (correctWord.includes(tile)) {
         let newTilesTested = [...tiles];
-        newTilesTested[position.row][index + 1] =
-          tiles[position.row][index + 1] + " wrong-location";
+        newTilesTested[data.position.row][index + 1] =
+          tiles[data.position.row][index + 1] + " wrong-location";
         setTiles([...newTilesTested]);
         let keyPosition = key();
         let newKeysTested = [...keyRows];
@@ -15755,8 +15657,8 @@ export const App = () => {
         setKeyRows([...newKeysTested]);
       } else {
         let newTilesTested = [...tiles];
-        newTilesTested[position.row][index + 1] =
-          tiles[position.row][index + 1] + " wrong";
+        newTilesTested[data.position.row][index + 1] =
+          tiles[data.position.row][index + 1] + " wrong";
         setTiles([...newTilesTested]);
         let keyPosition = key();
         let newKeysTested = [...keyRows];
@@ -15774,55 +15676,29 @@ export const App = () => {
   }
 
   function shakeTiles() {
-    tiles[position.row].forEach((_, index) => {
+    tiles[data.position.row].forEach((_, index) => {
       let newTilesShake = [...tiles];
       if (index % 2 !== 0) {
-        newTilesShake[position.row][index] =
-          newTilesShake[position.row][index] + " shake";
+        newTilesShake[data.position.row][index] =
+          newTilesShake[data.position.row][index] + " shake";
       }
       return setTiles([...newTilesShake]);
     });
     setTimeout(() => {
-      tiles[position.row].forEach((_, index) => {
+      tiles[data.position.row].forEach((_, index) => {
         let newTilesShake = [...tiles];
         if (index % 2 !== 0) {
-          newTilesShake[position.row][index] =
-            newTilesShake[position.row][index] - " shake";
+          newTilesShake[data.position.row][index] =
+            newTilesShake[data.position.row][index] - " shake";
         }
         return setTiles([...newTilesShake]);
       });
     }, animationDuration + 200);
   }
 
-  function resetGame(score, timerStat, todaySwitch) {
-    if (todaysGameSwitch) {
-      const statKey = () => {
-        if (todaySwitch) {
-          return timerStat === -1
-            ? "hiScore"
-            : timerStat === 90
-            ? "hiScore90"
-            : timerStat === 60
-            ? "hiScore60"
-            : "hiScore30";
-        }
-
-        return timerStat === -1
-          ? "streak"
-          : timerStat === 90
-          ? "streak90"
-          : timerStat === 60
-          ? "streak60"
-          : "streak30";
-      };
-      // setData({
-      //   ...data,
-      //   [statKey()]: !todaySwitch && score === 0 ? 0 : data[statKey()] + score,
-      // });
-      if (todaysDay !== dateDay) {
-        setData({ ...data, game: 1, today: dateDay });
-      }
-      resetToday();
+  function resetGame(newStreak) {
+    if (!todaysGameSwitch) {
+      todaysGame();
       return;
     }
     setKeyRows([
@@ -15885,10 +15761,10 @@ export const App = () => {
         "key",
       ],
     ]);
-    let newPosition = { ...position };
+    let newPosition = { ...data.position };
     newPosition.row = 0;
     newPosition.letterPosition = 0;
-    // setCurrentStreak(newStreak);
+    setCurrentStreak(newStreak);
     setPosition({ ...newPosition });
     setTimerDelay(-1);
     setCorrectWord(targetWords[Math.floor(Math.random() * targetWords.length)]);
@@ -15904,7 +15780,7 @@ export const App = () => {
     const msOffset = Date.now() - offsetFromDate;
     const dayOffset = (msOffset / 1000 / 60 / 60 / 24) * 5;
     const offSetByGameCount = () => {
-      let i = data.game + 1 + dayOffset;
+      let i = todaysGameCount + 1 + dayOffset;
       while (i > 2300) {
         i = i - 2300;
       }
@@ -15974,11 +15850,11 @@ export const App = () => {
         "key",
       ],
     ]);
-    let newPosition = { ...position };
+    let newPosition = { ...data.position };
     newPosition.row = 0;
     newPosition.letterPosition = 0;
     setPosition({ ...newPosition });
-    setSubtitles(`It's daily game ${data.game}`);
+    setSubtitles(`It's daily game ${data.gameNumber}`);
     setComicBubbleDirection("talk-left");
     comicBubbleInOut(2000);
     setSquirtleStatus("new-game2");
@@ -15986,78 +15862,60 @@ export const App = () => {
     setCorrectWord(wordOfDay);
   }
 
-  function handleToday() {
+  function todaysGame() {
     if (position.row > 0) {
       return;
     }
-    if (data.game < 6) {
-      setTodaysGameSwitch((prevState) => !prevState);
+    if (data.today !== dateDay) {
+      setData({ ...data, today: dateDay });
       return;
     }
+    if (data.game === 6) {
+      resetGame();
+      setTodaysGameSwitch(false);
+      return;
+    }
+    setTodaysGameSwitch((prevState) => !prevState);
 
-    setTodaysGameSwitch(false);
-    // if (todaysGameSwitch) {
-    //   resetToday();
+    if (todaysGameSwitch) {
+      resetGame();
+      return;
+    }
+    setTimerDelay(-1);
+
+    for (let i = position.row; i >= 0; i--) {
+      let newTilesWin = [...tiles];
+      newTilesWin[i].forEach((letter, index) => {
+        if (index % 2 !== 0 && letter !== "") {
+          setTimeout(() => {
+            newTilesWin[i][index] = newTilesWin[i][index] + " flip";
+            return setTiles([...newTilesWin]);
+          }, 500 + animationDuration * i + (animationDuration / 2) * index);
+        }
+      });
+    }
+    for (let i = position.row; i >= 0; i--) {
+      let newTilesWin = [...tiles];
+      newTilesWin[i].forEach((letter, index) => {
+        if (index % 2 !== 0 && letter !== "") {
+          setTimeout(() => {
+            newTilesWin[i][index] = "";
+            newTilesWin[i][index - 1] = "";
+            return setTiles([...newTilesWin]);
+          }, 750 + animationDuration * i + (animationDuration / 2) * index);
+        }
+      });
+    }
+    // if (todaysGameCount === 5) {
+    //   resetGame();
     //   return;
     // }
-    // resetGame();
+    resetToday();
+    return;
   }
-
-  // function todaysGame() {
-  //   if (position.row > 0) {
-  //     return;
-  //   }
-  //   if (data.today !== dateDay) {
-  //     setData({ ...data, today: dateDay });
-  //     return;
-  //   }
-  //   if (data.game === 6) {
-  //     resetGame();
-  //     setTodaysGameSwitch(false);
-  //     return;
-  //   }
-  //   setTodaysGameSwitch((prevState) => !prevState);
-
-  //   if (todaysGameSwitch) {
-  //     resetGame();
-  //     return;
-  //   }
-  //   setTimerDelay(-1);
-
-  //   for (let i = position.row; i >= 0; i--) {
-  //     let newTilesWin = [...tiles];
-  //     newTilesWin[i].forEach((letter, index) => {
-  //       if (index % 2 !== 0 && letter !== "") {
-  //         setTimeout(() => {
-  //           newTilesWin[i][index] = newTilesWin[i][index] + " flip";
-  //           return setTiles([...newTilesWin]);
-  //         }, 500 + animationDuration * i + (animationDuration / 2) * index);
-  //       }
-  //     });
-  //   }
-  //   for (let i = position.row; i >= 0; i--) {
-  //     let newTilesWin = [...tiles];
-  //     newTilesWin[i].forEach((letter, index) => {
-  //       if (index % 2 !== 0 && letter !== "") {
-  //         setTimeout(() => {
-  //           newTilesWin[i][index] = "";
-  //           newTilesWin[i][index - 1] = "";
-  //           return setTiles([...newTilesWin]);
-  //         }, 750 + animationDuration * i + (animationDuration / 2) * index);
-  //       }
-  //     });
-  //   }
-  //   // if (todaysGameCount === 5) {
-  //   //   resetGame();
-  //   //   return;
-  //   // }
-  //   resetToday();
-  //   return;
-  // }
 
   function checkWinLose(guess, word) {
     // setTimerDelay(0);
-    const score = todaysGameSwitch ? 6 - position.row : 1;
     if (guess === correctWord) {
       const squirtleWinStatus =
         position.row < 3 ? "win" : position.row < 5 ? "win2" : "win3";
@@ -16072,12 +15930,9 @@ export const App = () => {
       setComicBubbleDirection("talk-right");
       comicBubbleInOut(2000);
       squirtleInOut(2000);
-      if (todaysGameSwitch) {
-        setData({ ...data, game: data.game + 1 });
+      if (!todaysGameSwitch) {
+        setData({ ...data, game: data.game++ });
       }
-      // if (data.game > 4) {
-      //   setTodaysGameSwitch(false);
-      // }
       // setTimerDelay(0);
       // setTimeout(() => {
       //   return setTimerDelay(0);
@@ -16096,7 +15951,7 @@ export const App = () => {
       }
       for (let i = position.row; i >= 0; i--) {
         let newTilesWin = [...tiles];
-        // let newCurrentStreak = currentStreak;
+        let newCurrentStreak = currentStreak;
         newTilesWin[i].forEach((_, index) => {
           if (index % 2 !== 0) {
             setTimeout(() => {
@@ -16104,7 +15959,7 @@ export const App = () => {
               newTilesWin[i][index - 1] = "";
               i === 0 &&
                 index === 9 &&
-                resetGame(score, timerSwitch, todaysGameSwitch) &&
+                resetGame(newCurrentStreak + 1) &&
                 console.log("has reset");
               return setTiles([...newTilesWin]);
             }, 3250 + animationDuration * i + (animationDuration / 2) * index);
@@ -16120,11 +15975,8 @@ export const App = () => {
       comicBubbleInOut(5000);
       setSquirtleStatus("sad");
       squirtleInOut(5000);
-      if (todaysGameSwitch) {
+      if (!todaysGameSwitch) {
         setData({ ...data, game: data.game++ });
-      }
-      if (data.game > 5) {
-        setTodaysGameSwitch(false);
       }
       // setTimerDelay(0);
       // setTimeout(() => {
@@ -16150,7 +16002,7 @@ export const App = () => {
               newTilesWin[i][index - 1] = "";
               i === 0 &&
                 index === 9 &&
-                resetGame(0, timerSwitch, todaysGameSwitch) &&
+                resetGame(0) &&
                 console.log("has reset");
               return setTiles([...newTilesWin]);
             }, 3250 + animationDuration * i + (animationDuration / 2) * index);
@@ -16159,7 +16011,7 @@ export const App = () => {
       }
       return;
     }
-    let newPosition = { ...position };
+    let newPosition = { ...data.position };
     newPosition.row++;
     newPosition.letterPosition = 0;
     setPosition({ ...newPosition });
@@ -16224,10 +16076,12 @@ export const App = () => {
           className="header-sides"
           id="todays-word"
           onClick={() => {
-            handleToday();
+            todaysGame();
           }}
         >
-          <div className="dailyNumber">{todaysGameSwitch ? data.game : ""}</div>
+          <div className="dailyNumber">
+            {!todaysGameSwitch ? data.game : ""}
+          </div>
           <svg
             onClick={(e) => handleClick(".svg-icon")}
             className="svg-icon"
