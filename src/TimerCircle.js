@@ -1,18 +1,86 @@
 import { useState, useEffect } from "react";
+import gsap from "gsap";
+import localForage from "localforage";
+
+const clickDown = () => {
+  gsap.from(".timer-button", {
+    scale: 0.8,
+    duration: 0.3,
+  });
+};
 
 function TimerCircle(props) {
-  const [timer, setTimer] = useState(-1);
-  const [timeLeft, setTimeLeft] = useState(-1);
-  const [progress, setProgress] = useState(0);
+  localForage.config({
+    driver: localForage.LOCALSTORAGE,
+    name: "sqwordle",
+    version: 1.0,
+    storeName: "sqwordleData",
+  });
+  function saveData(key, value) {
+    localForage
+      .setItem(key, value)
+      .then(function () {
+        console.log("Data saved successfully");
+      })
+      .catch(function (error) {
+        console.log("Error while saving data: " + error);
+      });
+  }
+
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setTimeout(() => {
+      setHasMounted(true);
+    }, 4000);
+  }, []);
+
+  const defaultTimer = -1;
+  const defaultTimeLeft = -1;
+  const defaultProgress = 0;
+  const [timer, setTimer] = useState(defaultTimer);
+  const [timeLeft, setTimeLeft] = useState(defaultTimeLeft);
+  const [progress, setProgress] = useState(defaultProgress);
+
+  useEffect(() => {
+    localForage.getItem("timer").then((value) => {
+      setTimer(value || defaultTimer);
+    });
+  }, []);
+  useEffect(() => {
+    hasMounted && saveData("timer", timer);
+  }, [timer]);
+
+  useEffect(() => {
+    localForage.getItem("timeLeft").then((value) => {
+      setTimeLeft(value || defaultTimeLeft);
+    });
+  }, []);
+  useEffect(() => {
+    // hasMounted && localForage.setItem("timeLeft", timeLeft);
+    hasMounted && saveData("timeLeft", timeLeft);
+  }, [timeLeft]);
+
+  useEffect(() => {
+    localForage.getItem("progress").then((value) => {
+      setProgress(value || defaultProgress);
+    });
+  }, []);
+  useEffect(() => {
+    hasMounted && saveData("progress", progress);
+  }, [progress]);
+
   //   const [timerIcon, setTimerIcon] = useState("timer-button timer-off");
 
   useEffect(() => {
+    if (!hasMounted) {
+      return;
+    }
     const timeInterval = setInterval(() => {
       if (props.delay === -1) {
         setTimeLeft(timer);
         setProgress(0);
       } else {
-        console.log("timer has counted");
+        // console.log("timer has counted");
         setTimeLeft((timeLeft) =>
           timeLeft > 0 ? timeLeft - 1 : timeLeft === -1 ? timer : 0
         );
@@ -20,9 +88,12 @@ function TimerCircle(props) {
     }, 1000);
 
     return () => clearInterval(timeInterval);
-  }, [props.delay, timer]);
+  }, [props.delay, timer, hasMounted]);
 
   useEffect(() => {
+    if (!hasMounted) {
+      return;
+    }
     if (props.delay === 0) {
       timeLeft <= timer && setProgress(100 - (timeLeft / timer) * 100);
     } else if (props.delay === -1) {
@@ -32,9 +103,12 @@ function TimerCircle(props) {
       setTimeLeft(timer + props.delay);
       setProgress(0);
     }
-  }, [timeLeft, props.delay, timer]);
+  }, [timeLeft, props.delay, timer, hasMounted]);
 
   useEffect(() => {
+    if (!hasMounted) {
+      return;
+    }
     if (timeLeft === 10) {
       props.tenSecondWarning();
     } else if (timeLeft === 0) {
@@ -53,8 +127,9 @@ function TimerCircle(props) {
       : (setTimer(-1), setTimeLeft(-1), setProgress(0));
   }
 
-  function handleClick(e) {
-    props.clickDown(e);
+  function handleClick() {
+    clickDown();
+    // props.clickDown(e);
     if (props.position > 0) {
       return;
     }
@@ -83,9 +158,8 @@ function TimerCircle(props) {
       <div
         className="timer-button timer-off"
         id="streak"
-        onClick={(e) => {
-          console.log(e.target);
-          handleClick(e.target);
+        onClick={() => {
+          handleClick();
         }}
       >
         <div
@@ -103,9 +177,8 @@ function TimerCircle(props) {
     <div
       className="timer-button timer-on"
       id="streak"
-      onClick={(e) => {
-        console.log(e.target);
-        handleClick(e.target);
+      onClick={() => {
+        handleClick();
       }}
     >
       <div

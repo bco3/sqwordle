@@ -2,8 +2,48 @@ import "./App.css";
 import { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import TimerCircle from "./TimerCircle";
+import localForage from "localforage";
 
 export const App = () => {
+  localForage.config({
+    driver: localForage.LOCALSTORAGE,
+    name: "sqwordle",
+    version: 1.0,
+    storeName: "sqwordleData",
+  });
+
+  // the function to save data
+  function saveData(key, value) {
+    localForage
+      .setItem(key, value)
+      .then(function () {
+        console.log("Data saved successfully");
+      })
+      .catch(function (error) {
+        console.log("Error while saving data: " + error);
+      });
+  }
+
+  // the function to load data
+  function loadData(key) {
+    localForage
+      .getItem(key)
+      .then(function (value) {
+        console.log("Data loaded successfully");
+        return value;
+      })
+      .catch(function (error) {
+        console.log("Error while loading data: " + error);
+        // return key.replace(/"/g, "");
+        return null;
+      });
+  }
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setTimeout(() => {
+      setHasMounted(true);
+    }, 3000);
+  }, []);
   const targetWords = [
     "cigar",
     "rebut",
@@ -15303,113 +15343,96 @@ export const App = () => {
     ["0", "", "2", "", "1", "", "0", "", "1", ""],
     ["1", "", "0", "", "1", "", "2", "", "2", ""],
   ];
-  useEffect(() => {
-    // localStorage.clear("data");
-    if (localStorage.getItem("data") === null) {
-      localStorage.setItem("data", JSON.stringify(data));
-    }
-  }, []);
 
-  const storedData = JSON.parse(localStorage.getItem("data"));
+  const defaultTiles = [
+    ["", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", ""],
+  ];
+  const defaultKeyRows = [
+    [
+      "Q",
+      "key",
+      "W",
+      "key",
+      "E",
+      "key",
+      "R",
+      "key",
+      "T",
+      "key",
+      "Y",
+      "key",
+      "U",
+      "key",
+      "I",
+      "key",
+      "O",
+      "key",
+      "P",
+      "key",
+    ],
+    [
+      "A",
+      "key",
+      "S",
+      "key",
+      "D",
+      "key",
+      "F",
+      "key",
+      "G",
+      "key",
+      "H",
+      "key",
+      "J",
+      "key",
+      "K",
+      "key",
+      "L",
+      "key",
+    ],
+    [
+      "Z",
+      "key",
+      "X",
+      "key",
+      "C",
+      "key",
+      "V",
+      "key",
+      "B",
+      "key",
+      "N",
+      "key",
+      "M",
+      "key",
+    ],
+  ];
+  const defaultWord =
+    targetWords[Math.floor(Math.random() * targetWords.length)];
+  const defaultPosition = { row: 0, letterPosition: 0 };
+  const defaultTodaysGameSwitch = false;
+  const defaultTimerDelay = -1;
+  const defaultTimerSwitch = -1;
 
-  const [tiles, setTiles] = useState(
-    storedData.tiles || [
-      ["", "", "", "", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", "", "", "", ""],
-    ]
-  );
-  const [keyRows, setKeyRows] = useState(
-    storedData.keyRows || [
-      [
-        "Q",
-        "key",
-        "W",
-        "key",
-        "E",
-        "key",
-        "R",
-        "key",
-        "T",
-        "key",
-        "Y",
-        "key",
-        "U",
-        "key",
-        "I",
-        "key",
-        "O",
-        "key",
-        "P",
-        "key",
-      ],
-      [
-        "A",
-        "key",
-        "S",
-        "key",
-        "D",
-        "key",
-        "F",
-        "key",
-        "G",
-        "key",
-        "H",
-        "key",
-        "J",
-        "key",
-        "K",
-        "key",
-        "L",
-        "key",
-      ],
-      [
-        "Z",
-        "key",
-        "X",
-        "key",
-        "C",
-        "key",
-        "V",
-        "key",
-        "B",
-        "key",
-        "N",
-        "key",
-        "M",
-        "key",
-      ],
-    ]
-  );
-  const [correctWord, setCorrectWord] = useState(
-    storedData.word ||
-      targetWords[Math.floor(Math.random() * targetWords.length)]
-  );
-  const [currentStreak, setCurrentStreak] = useState(0);
+  const [tiles, setTiles] = useState(defaultTiles);
+  const [keyRows, setKeyRows] = useState(defaultKeyRows);
+  const [word, setWord] = useState(defaultWord);
+  //  || targetWords[Math.floor(Math.random() * targetWords.length)]
+  // const [currentStreak, setCurrentStreak] = useState(0);
   // const [todaysGameCount, setTodaysGameCount] = useState(0);
   const [todaysGameSwitch, setTodaysGameSwitch] = useState(
-    storedData.gameSwitch || false
+    defaultTodaysGameSwitch
   );
-  const [position, setPosition] = useState(
-    storedData.position || { row: 0, letterPosition: 0 }
-  );
-  const [squirtleStatus, setSquirtleStatus] = useState("new-game");
-  const [comicBubbleDirection, setComicBubbleDirection] = useState("talk-left");
-  const [subtitles, setSubtitles] = useState("Welcome back!");
-  // const [theDay, setTheDay] = useState(0)
-  // const [timerIcon, setTimerIcon] = useState("timer-button timer-off");
-  const [timerDelay, setTimerDelay] = useState(storedData.timerDelay || -1);
-  const [timerSwitch, setTimerSwitch] = useState(storedData.timerSwitch || -1);
-
-  const todaysGameCount = storedData.game || 1;
+  const [timerDelay, setTimerDelay] = useState(defaultTimerDelay);
+  const [timerSwitch, setTimerSwitch] = useState(defaultTimerSwitch);
   const dateDay = new Date().getDate();
-  const todaysDay = storedData.today || dateDay;
-
-  const [data, setData] = useState({
-    today: todaysDay,
+  const defaultData = {
+    today: dateDay,
     game: 1,
     allTimeHiScore: 0,
     hiScore: 0,
@@ -15427,46 +15450,425 @@ export const App = () => {
     streak60: 0,
     allTimeStreak30: 0,
     streak30: 0,
-    position: position,
-    tiles: tiles,
-    keyRows: keyRows,
-    word: correctWord,
     gameSwitch: todaysGameSwitch,
     timerDelay: timerDelay,
     timerSwitch: timerSwitch,
-  });
+  };
+  const [data, setData] = useState(defaultData);
+  // const todaysDay = data.today;
+  const [position, setPosition] = useState(defaultPosition);
+  const [squirtleStatus, setSquirtleStatus] = useState("new-game");
+  const [comicBubbleDirection, setComicBubbleDirection] = useState("talk-left");
+  const [subtitles, setSubtitles] = useState("Welcome back!");
+  // const [theDay, setTheDay] = useState(0)
+  // const [timerIcon, setTimerIcon] = useState("timer-button timer-off")
+  // const todaysGameCount = storedData.game || 1;
 
   useEffect(() => {
-    setData({ ...data, position: position });
-  }, [position]);
+    // localStorage.clear("data");
+    // if (localStorage.getItem("data") === null) {
+    //   localStorage.setItem("data", JSON.stringify(data));
+    // }
+    // if (localStorage.getItem("position") === null) {
+    //   localStorage.setItem("position", JSON.stringify(position));
+    // }
+    // if (localStorage.getItem("word") === null) {
+    //   localStorage.setItem("word", JSON.stringify(word));
+    // }
+    // loadData("data") ? setData(storedData()) : saveData("data", data);
+    // loadData("keyRows")
+    //   ? setKeyRows(storedKeyRows())
+    //   : saveData("keyRows", keyRows);
+    // loadData("tiles") ? setTiles(storedTiles()) : saveData("tiles", tiles);
+    // loadData("position")
+    //   ? setPosition(storedPosition())
+    //   : saveData("position", position);
+    // loadData("word")
+    //   ? setWord(storedWord())
+    //   : saveData("word", word);
+  }, []);
 
   useEffect(() => {
-    setData({ ...data, word: correctWord });
-  }, [correctWord]);
+    localForage.getItem("tiles").then((value) => {
+      setTiles(value || defaultTiles);
+    });
+  }, []);
+  useEffect(() => {
+    hasMounted && saveData("tiles", tiles);
+  }, [tiles]);
 
   useEffect(() => {
-    setData({ ...data, gameSwitch: todaysGameSwitch });
+    localForage.getItem("keyRows").then((value) => {
+      setKeyRows(value || defaultKeyRows);
+    });
+  }, []);
+  useEffect(() => {
+    hasMounted && localForage.setItem("keyRows", keyRows);
+    // hasMounted && saveData("keyRows", keyRows);
+  }, [keyRows]);
+
+  useEffect(() => {
+    localForage.getItem("word").then((value) => {
+      setWord(value || defaultWord);
+    });
+  }, []);
+  useEffect(() => {
+    hasMounted && saveData("word", word);
+  }, [word]);
+
+  useEffect(() => {
+    localForage.getItem("todaysGameSwitch").then((value) => {
+      setTodaysGameSwitch(value || defaultTodaysGameSwitch);
+    });
+  }, []);
+  useEffect(() => {
+    hasMounted && saveData("todaysGameSwitch", todaysGameSwitch);
+    hasMounted && resetGame();
   }, [todaysGameSwitch]);
 
   useEffect(() => {
-    setData({ ...data, timerDelay: timerDelay });
+    localForage.getItem("timerDelay").then((value) => {
+      setTimerDelay(value || defaultTimerDelay);
+    });
+  }, []);
+  useEffect(() => {
+    hasMounted && saveData("timerDelay", timerDelay);
   }, [timerDelay]);
 
   useEffect(() => {
-    setData({ ...data, timerSwitch: timerSwitch });
+    localForage.getItem("timerSwitch").then((value) => {
+      setTimerSwitch(value || defaultTimerSwitch);
+    });
+  }, []);
+  useEffect(() => {
+    hasMounted && saveData("timerSwitch", timerSwitch);
   }, [timerSwitch]);
 
   useEffect(() => {
-    resetGame();
-  }, [todaysGameSwitch]);
+    localForage.getItem("position").then((value) => {
+      setPosition(value || defaultPosition);
+    });
+  }, []);
+  useEffect(() => {
+    hasMounted && saveData("position", position);
+  }, [position]);
 
   useEffect(() => {
-    localStorage.setItem("data", JSON.stringify(data));
-  }, [data, tiles, keyRows]);
+    localForage.getItem("data").then((value) => {
+      setData(value || defaultData);
+    });
+  }, []);
+  useEffect(() => {
+    hasMounted && saveData("data", data);
+  }, [data]);
+
+  // async function storedData() {
+  //   try {
+  //     await loadData("data")
+  //       .then(function (loadedValue) {
+  //         return loadedValue;
+  //       })
+  //       .catch(function (error) {
+  //         saveData("data", {
+  //           today: dateDay,
+  //           game: 1,
+  //           allTimeHiScore: 0,
+  //           hiScore: 0,
+  //           allTimeHiScore90: 0,
+  //           hiScore90: 0,
+  //           allTimeHiScore60: 0,
+  //           hiScore60: 0,
+  //           allTimeHiScore30: 0,
+  //           hiScore30: 0,
+  //           allTimeStreak: 0,
+  //           streak: 0,
+  //           allTimeStreak90: 0,
+  //           streak90: 0,
+  //           allTimeStreak60: 0,
+  //           streak60: 0,
+  //           allTimeStreak30: 0,
+  //           streak30: 0,
+  //           gameSwitch: todaysGameSwitch,
+  //           timerDelay: timerDelay,
+  //           timerSwitch: timerSwitch,
+  //         });
+  //         console.log("Error while loading data: " + error);
+  //         return {
+  //           today: dateDay,
+  //           game: 1,
+  //           allTimeHiScore: 0,
+  //           hiScore: 0,
+  //           allTimeHiScore90: 0,
+  //           hiScore90: 0,
+  //           allTimeHiScore60: 0,
+  //           hiScore60: 0,
+  //           allTimeHiScore30: 0,
+  //           hiScore30: 0,
+  //           allTimeStreak: 0,
+  //           streak: 0,
+  //           allTimeStreak90: 0,
+  //           streak90: 0,
+  //           allTimeStreak60: 0,
+  //           streak60: 0,
+  //           allTimeStreak30: 0,
+  //           streak30: 0,
+  //           gameSwitch: todaysGameSwitch,
+  //           timerDelay: timerDelay,
+  //           timerSwitch: timerSwitch,
+  //         };
+  //       });
+  //   } catch (error) {
+  //     console.log("error while loading");
+  //   }
+  // }
+
+  // async function storedPosition() {
+  //   try {
+  //     await loadData("position")
+  //       .then(function (loadedValue) {
+  //         return loadedValue;
+  //       })
+  //       .catch(function (error) {
+  //         saveData("position", { row: 0, letterPosition: 0 });
+  //         console.log("Error while loading data: " + error);
+  //         return { row: 0, letterPosition: 0 };
+  //       });
+  //   } catch (error) {
+  //     console.log("error while loading");
+  //     return { row: 0, letterPosition: 0 };
+  //   }
+  // }
+  // async function storedWord() {
+  //   try {
+  //     await loadData("word")
+  //       .then(function (loadedValue) {
+  //         return loadedValue;
+  //       })
+  //       .catch(function (error) {
+  //         saveData(
+  //           "word",
+  //           targetWords[Math.floor(Math.random() * targetWords.length)]
+  //         );
+  //         console.log("Error while loading data: " + error);
+  //         return word;
+  //       });
+  //   } catch (error) {
+  //     console.log("error while loading");
+  //     return targetWords[Math.floor(Math.random() * targetWords.length)];
+  //   }
+  // }
+  // async function storedTiles() {
+  //   try {
+  //     const loadedValue = await loadData("tiles");
+  //     return loadedValue;
+  //   } catch (error) {
+  //     console.log("Error while loading data: " + error);
+  //   }
+  //   return [
+  //     ["", "", "", "", "", "", "", "", "", ""],
+  //     ["", "", "", "", "", "", "", "", "", ""],
+  //     ["", "", "", "", "", "", "", "", "", ""],
+  //     ["", "", "", "", "", "", "", "", "", ""],
+  //     ["", "", "", "", "", "", "", "", "", ""],
+  //     ["", "", "", "", "", "", "", "", "", ""],
+  //   ];
+  // }
+  // async function storedKeyRows() {
+  //   try {
+  //     const loadedValue = loadData("keyRows");
+  //     return loadedValue;
+  //   } catch (error) {
+  //     console.log("Error while loading data: " + error);
+  //   }
+  //   return [
+  //     [
+  //       "Q",
+  //       "key",
+  //       "W",
+  //       "key",
+  //       "E",
+  //       "key",
+  //       "R",
+  //       "key",
+  //       "T",
+  //       "key",
+  //       "Y",
+  //       "key",
+  //       "U",
+  //       "key",
+  //       "I",
+  //       "key",
+  //       "O",
+  //       "key",
+  //       "P",
+  //       "key",
+  //     ],
+  //     [
+  //       "A",
+  //       "key",
+  //       "S",
+  //       "key",
+  //       "D",
+  //       "key",
+  //       "F",
+  //       "key",
+  //       "G",
+  //       "key",
+  //       "H",
+  //       "key",
+  //       "J",
+  //       "key",
+  //       "K",
+  //       "key",
+  //       "L",
+  //       "key",
+  //     ],
+  //     [
+  //       "Z",
+  //       "key",
+  //       "X",
+  //       "key",
+  //       "C",
+  //       "key",
+  //       "V",
+  //       "key",
+  //       "B",
+  //       "key",
+  //       "N",
+  //       "key",
+  //       "M",
+  //       "key",
+  //     ],
+  //   ];
+  // }
+  // async function storedData() {
+  //   try {
+  //     await loadData("data")
+  //       .then(function (loadedValue) {
+  //         return loadedValue;
+  //       })
+  //       .catch(function (error) {
+  //         saveData("data", data);
+  //         console.log("Error while loading data: " + error);
+  //         return data;
+  //       });
+  //   } catch (error) {
+  //     console.log("error while loading");
+  //   }
+  // }
+
+  // async function storedPosition() {
+  //   try {
+  //     await loadData("position")
+  //       .then(function (loadedValue) {
+  //         return loadedValue;
+  //       })
+  //       .catch(function (error) {
+  //         saveData("position", position);
+  //         console.log("Error while loading data: " + error);
+  //         return position;
+  //       });
+  //   } catch (error) {
+  //     console.log("error while loading");
+  //   }
+  // }
+  // async function storedWord() {
+  //   try {
+  //     await loadData("word")
+  //       .then(function (loadedValue) {
+  //         return loadedValue;
+  //       })
+  //       .catch(function (error) {
+  //         saveData("word", word);
+  //         console.log("Error while loading data: " + error);
+  //         return word;
+  //       });
+  //   } catch (error) {
+  //     console.log("error while loading");
+  //   }
+  // }
+  // async function storedTiles() {
+  //   try {
+  //     await loadData("tiles")
+  //       .then(function (loadedValue) {
+  //         return loadedValue;
+  //       })
+  //       .catch(function (error) {
+  //         saveData("tiles", tiles);
+  //         console.log("Error while loading data: " + error);
+  //         return tiles;
+  //       });
+  //   } catch (error) {
+  //     console.log("error while loading");
+  //     return [
+  //       ["", "", "", "", "", "", "", "", "", ""],
+  //       ["", "", "", "", "", "", "", "", "", ""],
+  //       ["", "", "", "", "", "", "", "", "", ""],
+  //       ["", "", "", "", "", "", "", "", "", ""],
+  //       ["", "", "", "", "", "", "", "", "", ""],
+  //       ["", "", "", "", "", "", "", "", "", ""],
+  //     ];
+  //   }
+  // }
+  // async function storedKeyRows() {
+  //   try {
+  //     await loadData("keyRows")
+  //       .then(function (loadedValue) {
+  //         return loadedValue;
+  //       })
+  //       .catch(function (error) {
+  //         saveData("keyRows", keyRows);
+  //         console.log("Error while loading data: " + error);
+  //         return keyRows;
+  //       });
+  //   } catch (error) {
+  //     console.log("error while loading");
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   setData({ ...data, position: position });
+  // }, [position]);
+
+  // useEffect(() => {
+  //   setData({ ...data, word: word });
+  // }, [word]);
+
+  // useEffect(() => {
+  //   setData({ ...data, gameSwitch: todaysGameSwitch });
+  // }, [todaysGameSwitch]);
+
+  // useEffect(() => {
+  //   setData({ ...data, timerDelay: timerDelay });
+  // }, [timerDelay]);
+
+  // useEffect(() => {
+  //   setData({ ...data, timerSwitch: timerSwitch });
+  // }, [timerSwitch]);
+
+  // useEffect(() => {
+  //   resetGame();
+  // }, [todaysGameSwitch]);
+
+  // useEffect(() => {
+  //   saveData("keyRows", keyRows);
+  // }, [keyRows]);
+  // useEffect(() => {
+  //   saveData("data", data);
+  // }, [data]);
+  // useEffect(() => {
+  //   saveData("tiles", tiles);
+  // }, [tiles]);
+  // useEffect(() => {
+  //   saveData("position", position);
+  // }, [position]);
+  // useEffect(() => {
+  //   saveData("word", word);
+  // }, [word]);
 
   useEffect(() => {
     // setSubtitles(randomNewGameResponse());
-    // setCorrectWord(targetWords[Math.floor(Math.random() * targetWords.length)]);
+    // setWord(targetWords[Math.floor(Math.random() * targetWords.length)]);
     squirtleInOut(2000);
     comicBubbleInOut(2000);
     // if (todaysDay !== dateDay) {
@@ -15492,7 +15894,7 @@ export const App = () => {
       setTiles([...newTiles]);
       return setPosition({ ...newPosition });
     }
-    setSubtitles(`${correctWord.toUpperCase()}!? hmmph!!!`);
+    setSubtitles(`${word.toUpperCase()}!? hmmph!!!`);
     setComicBubbleDirection("talk-right");
     comicBubbleInOut(5000);
     setSquirtleStatus("sad");
@@ -15661,7 +16063,7 @@ export const App = () => {
     console.log(position);
   }
   function submitGuess() {
-    console.log(correctWord);
+    console.log(word);
     if (position.letterPosition !== 10) {
       setSubtitles("Not enough letters");
       setSquirtleStatus("mad2");
@@ -15733,7 +16135,7 @@ export const App = () => {
       newTiles[position.row][index + 1] =
         tiles[position.row][index + 1] - " flip";
       setTiles([...newTiles]);
-      if (correctWord[index / 2] === tile) {
+      if (word[index / 2] === tile) {
         let newTilesTested = [...tiles];
         newTilesTested[position.row][index + 1] =
           tiles[position.row][index + 1] + " correct";
@@ -15743,7 +16145,7 @@ export const App = () => {
         newKeysTested[keyPosition[0]][keyPosition[1] + 1] =
           keyRows[keyPosition[0]][keyPosition[1] + 1] + " correct";
         setKeyRows([...newKeysTested]);
-      } else if (correctWord.includes(tile)) {
+      } else if (word.includes(tile)) {
         let newTilesTested = [...tiles];
         newTilesTested[position.row][index + 1] =
           tiles[position.row][index + 1] + " wrong-location";
@@ -15794,6 +16196,14 @@ export const App = () => {
     }, animationDuration + 200);
   }
 
+  useEffect(() => {
+    if (data.game === 6) {
+      setTodaysGameSwitch(false);
+      return;
+    }
+    hasMounted && resetToday();
+  }, [data.game]);
+
   function resetGame(score, timerStat, todaySwitch) {
     if (todaysGameSwitch) {
       const statKey = () => {
@@ -15819,10 +16229,18 @@ export const App = () => {
       //   ...data,
       //   [statKey()]: !todaySwitch && score === 0 ? 0 : data[statKey()] + score,
       // });
-      if (todaysDay !== dateDay) {
+      if (data.today !== dateDay) {
         setData({ ...data, game: 1, today: dateDay });
+        data.game === 1 && resetToday();
       }
-      resetToday();
+      if (data.game === 6) {
+        setTodaysGameSwitch(false);
+        return;
+      }
+      score !== undefined
+        ? setData({ ...data, game: data.game + 1 })
+        : resetToday();
+
       return;
     }
     setKeyRows([
@@ -15891,7 +16309,7 @@ export const App = () => {
     // setCurrentStreak(newStreak);
     setPosition({ ...newPosition });
     setTimerDelay(-1);
-    setCorrectWord(targetWords[Math.floor(Math.random() * targetWords.length)]);
+    setWord(targetWords[Math.floor(Math.random() * targetWords.length)]);
     setSubtitles(randomNewGameResponse());
     setComicBubbleDirection("talk-left");
     setSquirtleStatus("new-game");
@@ -15902,15 +16320,15 @@ export const App = () => {
   function wordOfDay() {
     const offsetFromDate = new Date(2023, 1, 13);
     const msOffset = Date.now() - offsetFromDate;
-    const dayOffset = (msOffset / 1000 / 60 / 60 / 24) * 5;
+    const dayOffset = Math.ceil(msOffset / 1000 / 60 / 60 / 24) * 5;
     const offSetByGameCount = () => {
-      let i = data.game + 1 + dayOffset;
+      let i = data.game + dayOffset;
       while (i > 2300) {
         i = i - 2300;
       }
       return i;
     };
-    return targetWords[Math.floor(offSetByGameCount())];
+    return targetWords[offSetByGameCount()];
   }
 
   function resetToday() {
@@ -15983,14 +16401,14 @@ export const App = () => {
     comicBubbleInOut(2000);
     setSquirtleStatus("new-game2");
     squirtleInOut(2000);
-    setCorrectWord(wordOfDay);
+    setWord(wordOfDay);
   }
 
   function handleToday() {
     if (position.row > 0) {
       return;
     }
-    if (data.game < 6) {
+    if (data.game !== 6) {
       setTodaysGameSwitch((prevState) => !prevState);
       return;
     }
@@ -16003,62 +16421,10 @@ export const App = () => {
     // resetGame();
   }
 
-  // function todaysGame() {
-  //   if (position.row > 0) {
-  //     return;
-  //   }
-  //   if (data.today !== dateDay) {
-  //     setData({ ...data, today: dateDay });
-  //     return;
-  //   }
-  //   if (data.game === 6) {
-  //     resetGame();
-  //     setTodaysGameSwitch(false);
-  //     return;
-  //   }
-  //   setTodaysGameSwitch((prevState) => !prevState);
-
-  //   if (todaysGameSwitch) {
-  //     resetGame();
-  //     return;
-  //   }
-  //   setTimerDelay(-1);
-
-  //   for (let i = position.row; i >= 0; i--) {
-  //     let newTilesWin = [...tiles];
-  //     newTilesWin[i].forEach((letter, index) => {
-  //       if (index % 2 !== 0 && letter !== "") {
-  //         setTimeout(() => {
-  //           newTilesWin[i][index] = newTilesWin[i][index] + " flip";
-  //           return setTiles([...newTilesWin]);
-  //         }, 500 + animationDuration * i + (animationDuration / 2) * index);
-  //       }
-  //     });
-  //   }
-  //   for (let i = position.row; i >= 0; i--) {
-  //     let newTilesWin = [...tiles];
-  //     newTilesWin[i].forEach((letter, index) => {
-  //       if (index % 2 !== 0 && letter !== "") {
-  //         setTimeout(() => {
-  //           newTilesWin[i][index] = "";
-  //           newTilesWin[i][index - 1] = "";
-  //           return setTiles([...newTilesWin]);
-  //         }, 750 + animationDuration * i + (animationDuration / 2) * index);
-  //       }
-  //     });
-  //   }
-  //   // if (todaysGameCount === 5) {
-  //   //   resetGame();
-  //   //   return;
-  //   // }
-  //   resetToday();
-  //   return;
-  // }
-
-  function checkWinLose(guess, word) {
+  function checkWinLose(guess, array) {
     // setTimerDelay(0);
     const score = todaysGameSwitch ? 6 - position.row : 1;
-    if (guess === correctWord) {
+    if (guess === word) {
       const squirtleWinStatus =
         position.row < 3 ? "win" : position.row < 5 ? "win2" : "win3";
       const squirtleWinSubs =
@@ -16066,15 +16432,12 @@ export const App = () => {
           ? "Amazing, what a game!"
           : position.row < 5
           ? "Impressive win!"
-          : `${correctWord}! that was close`;
+          : `${word}! that was close`;
       setSquirtleStatus(squirtleWinStatus);
       setSubtitles(squirtleWinSubs);
       setComicBubbleDirection("talk-right");
       comicBubbleInOut(2000);
       squirtleInOut(2000);
-      if (todaysGameSwitch) {
-        setData({ ...data, game: data.game + 1 });
-      }
       // if (data.game > 4) {
       //   setTodaysGameSwitch(false);
       // }
@@ -16082,7 +16445,7 @@ export const App = () => {
       // setTimeout(() => {
       //   return setTimerDelay(0);
       // }, 1500);
-      danceTiles(word);
+      danceTiles(array);
       for (let i = position.row; i >= 0; i--) {
         let newTilesWin = [...tiles];
         newTilesWin[i].forEach((_, index) => {
@@ -16115,17 +16478,11 @@ export const App = () => {
     }
 
     if (position.row === 5) {
-      setSubtitles(`${correctWord.toUpperCase()}!? hmmph!!!`);
+      setSubtitles(`${word.toUpperCase()}!? hmmph!!!`);
       setComicBubbleDirection("talk-right");
       comicBubbleInOut(5000);
       setSquirtleStatus("sad");
       squirtleInOut(5000);
-      if (todaysGameSwitch) {
-        setData({ ...data, game: data.game++ });
-      }
-      if (data.game > 5) {
-        setTodaysGameSwitch(false);
-      }
       // setTimerDelay(0);
       // setTimeout(() => {
       //   return setTimerDelay(0);
@@ -16204,9 +16561,9 @@ export const App = () => {
           </div> */}
         <TimerCircle
           // timer={timerTime}
-          clickDown={(e) => {
-            handleClick(e);
-          }}
+          // clickDown={(e) => {
+          //   handleClick(e);
+          // }}
           delay={timerDelay}
           position={position.row}
           onTimerEnd={nextLine}
