@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/sqwordle/static/css/main.8516c7b2.css",
-    "main.js": "/sqwordle/static/js/main.3774354d.js",
+    "main.css": "/sqwordle/static/css/main.6aa7388b.css",
+    "main.js": "/sqwordle/static/js/main.3fc98c5e.js",
     "static/js/787.72486cdd.chunk.js": "/sqwordle/static/js/787.72486cdd.chunk.js",
     "static/media/squirtle-new-game.webp": "/sqwordle/static/media/squirtle-new-game.ab6bf7771a801b1b66dc.webp",
     "static/media/squirtle-mad.webp": "/sqwordle/static/media/squirtle-mad.a9977ee0118d6dba8ef8.webp",
@@ -17,12 +17,12 @@
     "static/media/timer.webp": "/sqwordle/static/media/timer.510660911f587895b8bb.webp",
     "static/media/timer-on.webp": "/sqwordle/static/media/timer-on.8bbee9ff9d384fb8b2b4.webp",
     "index.html": "/sqwordle/index.html",
-    "main.8516c7b2.css.map": "/sqwordle/static/css/main.8516c7b2.css.map",
-    "main.3774354d.js.map": "/sqwordle/static/js/main.3774354d.js.map",
+    "main.6aa7388b.css.map": "/sqwordle/static/css/main.6aa7388b.css.map",
+    "main.3fc98c5e.js.map": "/sqwordle/static/js/main.3fc98c5e.js.map",
     "787.72486cdd.chunk.js.map": "/sqwordle/static/js/787.72486cdd.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.8516c7b2.css",
-    "static/js/main.3774354d.js"
+    "static/css/main.6aa7388b.css",
+    "static/js/main.3fc98c5e.js"
   ]
 }
