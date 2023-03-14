@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/sqwordle/static/css/main.c4dcc1b0.css",
-    "main.js": "/sqwordle/static/js/main.93a28111.js",
+    "main.css": "/sqwordle/static/css/main.8516c7b2.css",
+    "main.js": "/sqwordle/static/js/main.3774354d.js",
     "static/js/787.72486cdd.chunk.js": "/sqwordle/static/js/787.72486cdd.chunk.js",
     "static/media/squirtle-new-game.webp": "/sqwordle/static/media/squirtle-new-game.ab6bf7771a801b1b66dc.webp",
     "static/media/squirtle-mad.webp": "/sqwordle/static/media/squirtle-mad.a9977ee0118d6dba8ef8.webp",
@@ -11,17 +11,18 @@
     "static/media/squirtle-win.webp": "/sqwordle/static/media/squirtle-win.ba65304b09e6d9d1d6da.webp",
     "static/media/squirtle-new-game2.webp": "/sqwordle/static/media/squirtle-new-game2.265d778c82b8d4573d14.webp",
     "static/media/squirtle-win2.webp": "/sqwordle/static/media/squirtle-win2.151791950a8e39c218f2.webp",
+    "static/media/trophy.webp": "/sqwordle/static/media/trophy.13ce20099ade60b26e11.webp",
     "static/media/word-bubble-right.webp": "/sqwordle/static/media/word-bubble-right.4fa5a54ce51b86976a02.webp",
     "static/media/word-bubble.webp": "/sqwordle/static/media/word-bubble.a23720605d5e7410c26c.webp",
     "static/media/timer.webp": "/sqwordle/static/media/timer.510660911f587895b8bb.webp",
     "static/media/timer-on.webp": "/sqwordle/static/media/timer-on.8bbee9ff9d384fb8b2b4.webp",
     "index.html": "/sqwordle/index.html",
-    "main.c4dcc1b0.css.map": "/sqwordle/static/css/main.c4dcc1b0.css.map",
-    "main.93a28111.js.map": "/sqwordle/static/js/main.93a28111.js.map",
+    "main.8516c7b2.css.map": "/sqwordle/static/css/main.8516c7b2.css.map",
+    "main.3774354d.js.map": "/sqwordle/static/js/main.3774354d.js.map",
     "787.72486cdd.chunk.js.map": "/sqwordle/static/js/787.72486cdd.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.c4dcc1b0.css",
-    "static/js/main.93a28111.js"
+    "static/css/main.8516c7b2.css",
+    "static/js/main.3774354d.js"
   ]
 }
