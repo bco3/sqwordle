@@ -11390,9 +11390,6 @@ export const App6 = () => {
       </div>
       <div className="under-header-container">
         <div className="stats" style={{ top: showStats ? "5em" : "-17em" }}>
-          {/* <div className="stat-titles">
-
-             </div> */}
           <div
             className="stat-names"
             onClick={(e) => {
