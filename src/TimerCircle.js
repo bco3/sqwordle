@@ -56,7 +56,6 @@ function TimerCircle(props) {
     });
   }, []);
   useEffect(() => {
-    // hasMounted && localForage.setItem("timeLeft", timeLeft);
     hasMounted && saveData("timeLeft", timeLeft);
   }, [timeLeft]);
 
@@ -69,8 +68,6 @@ function TimerCircle(props) {
     hasMounted && saveData("progress", progress);
   }, [progress]);
 
-  //   const [timerIcon, setTimerIcon] = useState("timer-button timer-off");
-
   useEffect(() => {
     if (!hasMounted) {
       return;
@@ -80,7 +77,6 @@ function TimerCircle(props) {
         setTimeLeft(timer);
         setProgress(0);
       } else {
-        // console.log("timer has counted");
         setTimeLeft((timeLeft) =>
           timeLeft > 0 ? timeLeft - 1 : timeLeft === -1 ? timer : 0
         );
@@ -129,7 +125,6 @@ function TimerCircle(props) {
 
   function handleClick() {
     clickDown();
-    // props.clickDown(e);
     if (props.position > 0) {
       return;
     }
@@ -162,13 +157,7 @@ function TimerCircle(props) {
           handleClick();
         }}
       >
-        <div
-          className="circle-timer"
-          //   onClick={(e) => {
-          //     console.log(`c timer ${e}`);
-          //     handleClick(e.parent);
-          //   }}
-        ></div>
+        <div className="circle-timer"></div>
       </div>
     );
   }
@@ -181,13 +170,7 @@ function TimerCircle(props) {
         handleClick();
       }}
     >
-      <div
-        className="circle-timer"
-        // onClick={(e) => {
-        //   console.log(`c timer ${e}`);
-        //   handleClick(e.parent);
-        // }}
-      >
+      <div className="circle-timer">
         <svg
           width="100%"
           height="100%"

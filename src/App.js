@@ -1,5 +1,5 @@
 import "./App.css";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import gsap from "gsap";
 import TimerCircle from "./TimerCircle";
 import localForage from "localforage";
@@ -12,7 +12,6 @@ export const App = () => {
     storeName: "sqwordleData",
   });
 
-  // the function to save data
   function saveData(key, value) {
     localForage
       .setItem(key, value)
@@ -24,20 +23,18 @@ export const App = () => {
       });
   }
 
-  // the function to load data
-  function loadData(key) {
-    localForage
-      .getItem(key)
-      .then(function (value) {
-        console.log("Data loaded successfully");
-        return value;
-      })
-      .catch(function (error) {
-        console.log("Error while loading data: " + error);
-        // return key.replace(/"/g, "");
-        return null;
-      });
-  }
+  // function loadData(key) {
+  //   localForage
+  //     .getItem(key)
+  //     .then(function (value) {
+  //       console.log("Data loaded successfully");
+  //       return value;
+  //     })
+  //     .catch(function (error) {
+  //       console.log("Error while loading data: " + error);
+  //       return null;
+  //     });
+  // }
   const [hasMounted, setHasMounted] = useState(false);
   useEffect(() => {
     setTimeout(() => {
@@ -15422,18 +15419,19 @@ export const App = () => {
   const [tiles, setTiles] = useState(defaultTiles);
   const [keyRows, setKeyRows] = useState(defaultKeyRows);
   const [word, setWord] = useState(defaultWord);
-  //  || targetWords[Math.floor(Math.random() * targetWords.length)]
-  // const [currentStreak, setCurrentStreak] = useState(0);
-  // const [todaysGameCount, setTodaysGameCount] = useState(0);
   const [todaysGameSwitch, setTodaysGameSwitch] = useState(
     defaultTodaysGameSwitch
   );
   const [timerDelay, setTimerDelay] = useState(defaultTimerDelay);
   const [timerSwitch, setTimerSwitch] = useState(defaultTimerSwitch);
+  const [showStats, setShowStats] = useState(false);
   const dateDay = new Date().getDate();
   const defaultData = {
     today: dateDay,
     game: 1,
+  };
+  const [data, setData] = useState(defaultData);
+  const defaultStats = {
     allTimeHiScore: 0,
     hiScore: 0,
     allTimeHiScore90: 0,
@@ -15442,6 +15440,9 @@ export const App = () => {
     hiScore60: 0,
     allTimeHiScore30: 0,
     hiScore30: 0,
+  };
+  const [stats, setStats] = useState(defaultStats);
+  const defaultStreaks = {
     allTimeStreak: 0,
     streak: 0,
     allTimeStreak90: 0,
@@ -15450,19 +15451,12 @@ export const App = () => {
     streak60: 0,
     allTimeStreak30: 0,
     streak30: 0,
-    gameSwitch: todaysGameSwitch,
-    timerDelay: timerDelay,
-    timerSwitch: timerSwitch,
   };
-  const [data, setData] = useState(defaultData);
-  // const todaysDay = data.today;
+  const [streaks, setStreaks] = useState(defaultStreaks);
   const [position, setPosition] = useState(defaultPosition);
   const [squirtleStatus, setSquirtleStatus] = useState("new-game");
   const [comicBubbleDirection, setComicBubbleDirection] = useState("talk-left");
   const [subtitles, setSubtitles] = useState("Welcome back!");
-  // const [theDay, setTheDay] = useState(0)
-  // const [timerIcon, setTimerIcon] = useState("timer-button timer-off")
-  // const todaysGameCount = storedData.game || 1;
 
   useEffect(() => {
     // localStorage.clear("data");
@@ -15504,7 +15498,6 @@ export const App = () => {
   }, []);
   useEffect(() => {
     hasMounted && localForage.setItem("keyRows", keyRows);
-    // hasMounted && saveData("keyRows", keyRows);
   }, [keyRows]);
 
   useEffect(() => {
@@ -15514,7 +15507,25 @@ export const App = () => {
   }, []);
   useEffect(() => {
     hasMounted && saveData("word", word);
-  }, [word]);
+  }, [word, hasMounted]);
+
+  useEffect(() => {
+    localForage.getItem("stats").then((value) => {
+      setStats(value || defaultStats);
+    });
+  }, []);
+  useEffect(() => {
+    hasMounted && saveData("stats", stats);
+  }, [stats]);
+
+  useEffect(() => {
+    localForage.getItem("streaks").then((value) => {
+      setStreaks(value || defaultStreaks);
+    });
+  }, []);
+  useEffect(() => {
+    hasMounted && saveData("streaks", streaks);
+  }, [streaks]);
 
   useEffect(() => {
     localForage.getItem("todaysGameSwitch").then((value) => {
@@ -15562,318 +15573,9 @@ export const App = () => {
     hasMounted && saveData("data", data);
   }, [data]);
 
-  // async function storedData() {
-  //   try {
-  //     await loadData("data")
-  //       .then(function (loadedValue) {
-  //         return loadedValue;
-  //       })
-  //       .catch(function (error) {
-  //         saveData("data", {
-  //           today: dateDay,
-  //           game: 1,
-  //           allTimeHiScore: 0,
-  //           hiScore: 0,
-  //           allTimeHiScore90: 0,
-  //           hiScore90: 0,
-  //           allTimeHiScore60: 0,
-  //           hiScore60: 0,
-  //           allTimeHiScore30: 0,
-  //           hiScore30: 0,
-  //           allTimeStreak: 0,
-  //           streak: 0,
-  //           allTimeStreak90: 0,
-  //           streak90: 0,
-  //           allTimeStreak60: 0,
-  //           streak60: 0,
-  //           allTimeStreak30: 0,
-  //           streak30: 0,
-  //           gameSwitch: todaysGameSwitch,
-  //           timerDelay: timerDelay,
-  //           timerSwitch: timerSwitch,
-  //         });
-  //         console.log("Error while loading data: " + error);
-  //         return {
-  //           today: dateDay,
-  //           game: 1,
-  //           allTimeHiScore: 0,
-  //           hiScore: 0,
-  //           allTimeHiScore90: 0,
-  //           hiScore90: 0,
-  //           allTimeHiScore60: 0,
-  //           hiScore60: 0,
-  //           allTimeHiScore30: 0,
-  //           hiScore30: 0,
-  //           allTimeStreak: 0,
-  //           streak: 0,
-  //           allTimeStreak90: 0,
-  //           streak90: 0,
-  //           allTimeStreak60: 0,
-  //           streak60: 0,
-  //           allTimeStreak30: 0,
-  //           streak30: 0,
-  //           gameSwitch: todaysGameSwitch,
-  //           timerDelay: timerDelay,
-  //           timerSwitch: timerSwitch,
-  //         };
-  //       });
-  //   } catch (error) {
-  //     console.log("error while loading");
-  //   }
-  // }
-
-  // async function storedPosition() {
-  //   try {
-  //     await loadData("position")
-  //       .then(function (loadedValue) {
-  //         return loadedValue;
-  //       })
-  //       .catch(function (error) {
-  //         saveData("position", { row: 0, letterPosition: 0 });
-  //         console.log("Error while loading data: " + error);
-  //         return { row: 0, letterPosition: 0 };
-  //       });
-  //   } catch (error) {
-  //     console.log("error while loading");
-  //     return { row: 0, letterPosition: 0 };
-  //   }
-  // }
-  // async function storedWord() {
-  //   try {
-  //     await loadData("word")
-  //       .then(function (loadedValue) {
-  //         return loadedValue;
-  //       })
-  //       .catch(function (error) {
-  //         saveData(
-  //           "word",
-  //           targetWords[Math.floor(Math.random() * targetWords.length)]
-  //         );
-  //         console.log("Error while loading data: " + error);
-  //         return word;
-  //       });
-  //   } catch (error) {
-  //     console.log("error while loading");
-  //     return targetWords[Math.floor(Math.random() * targetWords.length)];
-  //   }
-  // }
-  // async function storedTiles() {
-  //   try {
-  //     const loadedValue = await loadData("tiles");
-  //     return loadedValue;
-  //   } catch (error) {
-  //     console.log("Error while loading data: " + error);
-  //   }
-  //   return [
-  //     ["", "", "", "", "", "", "", "", "", ""],
-  //     ["", "", "", "", "", "", "", "", "", ""],
-  //     ["", "", "", "", "", "", "", "", "", ""],
-  //     ["", "", "", "", "", "", "", "", "", ""],
-  //     ["", "", "", "", "", "", "", "", "", ""],
-  //     ["", "", "", "", "", "", "", "", "", ""],
-  //   ];
-  // }
-  // async function storedKeyRows() {
-  //   try {
-  //     const loadedValue = loadData("keyRows");
-  //     return loadedValue;
-  //   } catch (error) {
-  //     console.log("Error while loading data: " + error);
-  //   }
-  //   return [
-  //     [
-  //       "Q",
-  //       "key",
-  //       "W",
-  //       "key",
-  //       "E",
-  //       "key",
-  //       "R",
-  //       "key",
-  //       "T",
-  //       "key",
-  //       "Y",
-  //       "key",
-  //       "U",
-  //       "key",
-  //       "I",
-  //       "key",
-  //       "O",
-  //       "key",
-  //       "P",
-  //       "key",
-  //     ],
-  //     [
-  //       "A",
-  //       "key",
-  //       "S",
-  //       "key",
-  //       "D",
-  //       "key",
-  //       "F",
-  //       "key",
-  //       "G",
-  //       "key",
-  //       "H",
-  //       "key",
-  //       "J",
-  //       "key",
-  //       "K",
-  //       "key",
-  //       "L",
-  //       "key",
-  //     ],
-  //     [
-  //       "Z",
-  //       "key",
-  //       "X",
-  //       "key",
-  //       "C",
-  //       "key",
-  //       "V",
-  //       "key",
-  //       "B",
-  //       "key",
-  //       "N",
-  //       "key",
-  //       "M",
-  //       "key",
-  //     ],
-  //   ];
-  // }
-  // async function storedData() {
-  //   try {
-  //     await loadData("data")
-  //       .then(function (loadedValue) {
-  //         return loadedValue;
-  //       })
-  //       .catch(function (error) {
-  //         saveData("data", data);
-  //         console.log("Error while loading data: " + error);
-  //         return data;
-  //       });
-  //   } catch (error) {
-  //     console.log("error while loading");
-  //   }
-  // }
-
-  // async function storedPosition() {
-  //   try {
-  //     await loadData("position")
-  //       .then(function (loadedValue) {
-  //         return loadedValue;
-  //       })
-  //       .catch(function (error) {
-  //         saveData("position", position);
-  //         console.log("Error while loading data: " + error);
-  //         return position;
-  //       });
-  //   } catch (error) {
-  //     console.log("error while loading");
-  //   }
-  // }
-  // async function storedWord() {
-  //   try {
-  //     await loadData("word")
-  //       .then(function (loadedValue) {
-  //         return loadedValue;
-  //       })
-  //       .catch(function (error) {
-  //         saveData("word", word);
-  //         console.log("Error while loading data: " + error);
-  //         return word;
-  //       });
-  //   } catch (error) {
-  //     console.log("error while loading");
-  //   }
-  // }
-  // async function storedTiles() {
-  //   try {
-  //     await loadData("tiles")
-  //       .then(function (loadedValue) {
-  //         return loadedValue;
-  //       })
-  //       .catch(function (error) {
-  //         saveData("tiles", tiles);
-  //         console.log("Error while loading data: " + error);
-  //         return tiles;
-  //       });
-  //   } catch (error) {
-  //     console.log("error while loading");
-  //     return [
-  //       ["", "", "", "", "", "", "", "", "", ""],
-  //       ["", "", "", "", "", "", "", "", "", ""],
-  //       ["", "", "", "", "", "", "", "", "", ""],
-  //       ["", "", "", "", "", "", "", "", "", ""],
-  //       ["", "", "", "", "", "", "", "", "", ""],
-  //       ["", "", "", "", "", "", "", "", "", ""],
-  //     ];
-  //   }
-  // }
-  // async function storedKeyRows() {
-  //   try {
-  //     await loadData("keyRows")
-  //       .then(function (loadedValue) {
-  //         return loadedValue;
-  //       })
-  //       .catch(function (error) {
-  //         saveData("keyRows", keyRows);
-  //         console.log("Error while loading data: " + error);
-  //         return keyRows;
-  //       });
-  //   } catch (error) {
-  //     console.log("error while loading");
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   setData({ ...data, position: position });
-  // }, [position]);
-
-  // useEffect(() => {
-  //   setData({ ...data, word: word });
-  // }, [word]);
-
-  // useEffect(() => {
-  //   setData({ ...data, gameSwitch: todaysGameSwitch });
-  // }, [todaysGameSwitch]);
-
-  // useEffect(() => {
-  //   setData({ ...data, timerDelay: timerDelay });
-  // }, [timerDelay]);
-
-  // useEffect(() => {
-  //   setData({ ...data, timerSwitch: timerSwitch });
-  // }, [timerSwitch]);
-
-  // useEffect(() => {
-  //   resetGame();
-  // }, [todaysGameSwitch]);
-
-  // useEffect(() => {
-  //   saveData("keyRows", keyRows);
-  // }, [keyRows]);
-  // useEffect(() => {
-  //   saveData("data", data);
-  // }, [data]);
-  // useEffect(() => {
-  //   saveData("tiles", tiles);
-  // }, [tiles]);
-  // useEffect(() => {
-  //   saveData("position", position);
-  // }, [position]);
-  // useEffect(() => {
-  //   saveData("word", word);
-  // }, [word]);
-
   useEffect(() => {
-    // setSubtitles(randomNewGameResponse());
-    // setWord(targetWords[Math.floor(Math.random() * targetWords.length)]);
     squirtleInOut(2000);
     comicBubbleInOut(2000);
-    // if (todaysDay !== dateDay) {
-    //   setData({ ...data, game: 1, today: dateDay });
-    // }
   }, []);
 
   function nextLine() {
@@ -16042,7 +15744,6 @@ export const App = () => {
   }, [position, tiles]);
 
   function pressKey(key) {
-    // console.log(e);
     if (position.letterPosition >= 5 * 2 - 1) return;
     let newTiles = [...tiles];
     newTiles[position.row][position.letterPosition] = key.toLowerCase();
@@ -16104,7 +15805,6 @@ export const App = () => {
 
     timerSwitch > 0 && setTimerDelay(1);
     console.log(`timerDelay = ${timerDelay}`);
-    // setTimeout();
     tiles[position.row].forEach(
       (tile, index, array) =>
         index % 2 === 0 && flipTile(tile, index, array, guess)
@@ -16206,31 +15906,98 @@ export const App = () => {
 
   function resetGame(score, timerStat, todaySwitch) {
     if (todaysGameSwitch) {
-      const statKey = () => {
-        if (todaySwitch) {
-          return timerStat === -1
-            ? "hiScore"
-            : timerStat === 90
-            ? "hiScore90"
-            : timerStat === 60
-            ? "hiScore60"
-            : "hiScore30";
+      if (score !== undefined) {
+        if (timerStat === -1) {
+          setStats({
+            ...stats,
+            hiScore: stats.hiScore + score,
+            allTimeHiScore:
+              stats.allTimeHiScore < stats.hiScore + score
+                ? stats.hiScore + score
+                : stats.allTimeHiScore,
+          });
+          score > 0
+            ? setStreaks({
+                ...streaks,
+                streak: streaks.streak + 1,
+                allTimeStreak:
+                  streaks.allTimeStreak < streaks.streak + 1
+                    ? streaks.streak + 1
+                    : streaks.allTimeStreak,
+              })
+            : setStreaks({ ...streaks, streak: 0 });
         }
+        if (timerStat === 90) {
+          setStats({
+            ...stats,
+            hiScore90: stats.hiScore90 + score,
+            allTimeHiScore90:
+              stats.allTimeHiScore90 < stats.hiScore90 + score
+                ? stats.hiScore90 + score
+                : stats.allTimeHiScore90,
+          });
+          score > 0
+            ? setStreaks({
+                ...streaks,
+                streak90: streaks.streak90 + 1,
+                allTimeStreak90:
+                  streaks.allTimeStreak90 < streaks.streak90 + 1
+                    ? streaks.streak90 + 1
+                    : streaks.allTimeStreak90,
+              })
+            : setStreaks({ ...streaks, streak90: 0 });
+        }
+        if (timerStat === 60) {
+          setStats({
+            ...stats,
+            hiScore60: stats.hiScore60 + score,
+            allTimeHiScore60:
+              stats.allTimeHiScore60 < stats.hiScore60 + score
+                ? stats.hiScore60 + score
+                : stats.allTimeHiScore60,
+          });
+          score > 0
+            ? setStreaks({
+                ...streaks,
+                streak60: streaks.streak60 + 1,
+                allTimeStreak60:
+                  streaks.allTimeStreak60 < streaks.streak60 + 1
+                    ? streaks.streak60 + 1
+                    : streaks.allTimeStreak60,
+              })
+            : setStreaks({ ...streaks, streak60: 0 });
+        }
+        if (timerStat === 30) {
+          setStats({
+            ...stats,
+            hiScore30: stats.hiScore30 + score,
+            allTimeHiScore30:
+              stats.allTimeHiScore30 < stats.hiScore30 + score
+                ? stats.hiScore30 + score
+                : stats.allTimeHiScore30,
+          });
+          score > 0
+            ? setStreaks({
+                ...streaks,
+                streak30: streaks.streak30 + 1,
+                allTimeStreak30:
+                  streaks.allTimeStreak30 < streaks.streak30 + 1
+                    ? streaks.streak30 + 1
+                    : streaks.allTimeStreak30,
+              })
+            : setStreaks({ ...streaks, streak30: 0 });
+        }
+      }
 
-        return timerStat === -1
-          ? "streak"
-          : timerStat === 90
-          ? "streak90"
-          : timerStat === 60
-          ? "streak60"
-          : "streak30";
-      };
-      // setData({
-      //   ...data,
-      //   [statKey()]: !todaySwitch && score === 0 ? 0 : data[statKey()] + score,
-      // });
       if (data.today !== dateDay) {
         setData({ ...data, game: 1, today: dateDay });
+        setStats({
+          ...stats,
+          hiScore: 0,
+          hiScore90: 0,
+          hiScore60: 0,
+          hiScore30: 0,
+        });
         data.game === 1 && resetToday();
       }
       if (data.game === 6) {
@@ -16242,6 +16009,56 @@ export const App = () => {
         : resetToday();
 
       return;
+    }
+    if (score !== undefined) {
+      if (timerStat === -1) {
+        score > 0
+          ? setStreaks({
+              ...streaks,
+              streak: streaks.streak + 1,
+              allTimeStreak:
+                streaks.allTimeStreak < streaks.streak + 1
+                  ? streaks.streak + 1
+                  : streaks.allTimeStreak,
+            })
+          : setStreaks({ ...streaks, streak: 0 });
+      }
+      if (timerStat === 90) {
+        score > 0
+          ? setStreaks({
+              ...streaks,
+              streak90: streaks.streak90 + 1,
+              allTimeStreak90:
+                streaks.allTimeStreak90 < streaks.streak90 + 1
+                  ? streaks.streak90 + 1
+                  : streaks.allTimeStreak90,
+            })
+          : setStreaks({ ...streaks, streak90: 0 });
+      }
+      if (timerStat === 60) {
+        score > 0
+          ? setStreaks({
+              ...streaks,
+              streak60: streaks.streak60 + 1,
+              allTimeStreak60:
+                streaks.allTimeStreak60 < streaks.streak60 + 1
+                  ? streaks.streak60 + 1
+                  : streaks.allTimeStreak60,
+            })
+          : setStreaks({ ...streaks, streak60: 0 });
+      }
+      if (timerStat === 30) {
+        score > 0
+          ? setStreaks({
+              ...streaks,
+              streak30: streaks.streak30 + 1,
+              allTimeStreak30:
+                streaks.allTimeStreak30 < streaks.streak30 + 1
+                  ? streaks.streak30 + 1
+                  : streaks.allTimeStreak30,
+            })
+          : setStreaks({ ...streaks, streak30: 0 });
+      }
     }
     setKeyRows([
       [
@@ -16306,7 +16123,6 @@ export const App = () => {
     let newPosition = { ...position };
     newPosition.row = 0;
     newPosition.letterPosition = 0;
-    // setCurrentStreak(newStreak);
     setPosition({ ...newPosition });
     setTimerDelay(-1);
     setWord(targetWords[Math.floor(Math.random() * targetWords.length)]);
@@ -16328,6 +16144,7 @@ export const App = () => {
       }
       return i;
     };
+
     return targetWords[offSetByGameCount()];
   }
 
@@ -16408,21 +16225,29 @@ export const App = () => {
     if (position.row > 0) {
       return;
     }
+    if (data.today !== dateDay) {
+      setData({ ...data, game: 1, today: dateDay });
+      setStats({
+        ...stats,
+        hiScore: 0,
+        hiScore90: 0,
+        hiScore60: 0,
+        hiScore30: 0,
+      });
+      data.game === 1 && resetToday();
+      data.game === 6 && setTodaysGameSwitch((prevState) => !prevState);
+      return;
+    }
+
     if (data.game !== 6) {
       setTodaysGameSwitch((prevState) => !prevState);
       return;
     }
 
     setTodaysGameSwitch(false);
-    // if (todaysGameSwitch) {
-    //   resetToday();
-    //   return;
-    // }
-    // resetGame();
   }
 
   function checkWinLose(guess, array) {
-    // setTimerDelay(0);
     const score = todaysGameSwitch ? 6 - position.row : 1;
     if (guess === word) {
       const squirtleWinStatus =
@@ -16438,13 +16263,6 @@ export const App = () => {
       setComicBubbleDirection("talk-right");
       comicBubbleInOut(2000);
       squirtleInOut(2000);
-      // if (data.game > 4) {
-      //   setTodaysGameSwitch(false);
-      // }
-      // setTimerDelay(0);
-      // setTimeout(() => {
-      //   return setTimerDelay(0);
-      // }, 1500);
       danceTiles(array);
       for (let i = position.row; i >= 0; i--) {
         let newTilesWin = [...tiles];
@@ -16459,7 +16277,6 @@ export const App = () => {
       }
       for (let i = position.row; i >= 0; i--) {
         let newTilesWin = [...tiles];
-        // let newCurrentStreak = currentStreak;
         newTilesWin[i].forEach((_, index) => {
           if (index % 2 !== 0) {
             setTimeout(() => {
@@ -16483,10 +16300,6 @@ export const App = () => {
       comicBubbleInOut(5000);
       setSquirtleStatus("sad");
       squirtleInOut(5000);
-      // setTimerDelay(0);
-      // setTimeout(() => {
-      //   return setTimerDelay(0);
-      // }, 1500);
       for (let i = position.row; i >= 0; i--) {
         let newTilesWin = [...tiles];
         newTilesWin[i].forEach((_, index) => {
@@ -16522,9 +16335,6 @@ export const App = () => {
     setPosition({ ...newPosition });
     timerSwitch > 0 && setTimerDelay(0);
     console.log(`timerDelay = ${timerDelay}`);
-    // setTimeout(() => {
-    //   return setTimerDelay(0);
-    // }, 1500);
   }
 
   function danceTiles() {
@@ -16551,32 +16361,23 @@ export const App = () => {
   return (
     <div className="container">
       <div className="header">
-        {/* <div
-          className={timerIcon}
-          onClick={(e) => {
-            handleClick(e.target);
-            changeTimer();
-          }}
-          >
-          </div> */}
         <TimerCircle
-          // timer={timerTime}
-          // clickDown={(e) => {
-          //   handleClick(e);
-          // }}
           delay={timerDelay}
           position={position.row}
           onTimerEnd={nextLine}
           tenSecondWarning={shakeWarning}
           timerSwitch={timerSwitcher}
-          // newTimer={changeTimer}
         />
-        {/* <div className="header-sides" id="streak">
-          {currentStreak}
-        </div> */}
         <div className="title">
           <div className="sqwordle">SQWORDLE</div>
         </div>
+        <div
+          className="trophy-button"
+          onClick={(e) => {
+            handleClick(e.target);
+            setShowStats((showStats) => !showStats);
+          }}
+        ></div>
         <div
           className="header-sides"
           id="todays-word"
@@ -16603,25 +16404,55 @@ export const App = () => {
             <line x1="8" y1="2" x2="8" y2="6" />
             <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
-          {/* <svg
-            onClick={(e) => handleClick(e.target)}
-            className="svg-icon"
-            viewBox="0 0 1024 1024"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M512 204.8c-168.96 0-307.2 138.24-307.2 307.2s138.24 307.2 307.2 307.2 307.2-138.24 307.2-307.2-138.24-307.2-307.2-307.2z m0 552.96c-135.168 0-245.76-110.592-245.76-245.76s110.592-245.76 245.76-245.76 245.76 110.592 245.76 245.76-110.592 245.76-245.76 245.76z m30.72-258.048V368.64c0-11.264-9.216-20.48-20.48-20.48h-20.48c-11.264 0-20.48 9.216-20.48 20.48v143.36c0 8.192 3.072 16.384 9.216 21.504l98.304 98.304c8.192 8.192 20.48 8.192 28.672 0l14.336-14.336c8.192-8.192 8.192-20.48 0-28.672L542.72 499.712z" />
-          </svg> */}
         </div>
       </div>
       <div className="under-header-container">
-        {/* <div className="alert-container" data-alert-container></div> */}
-        <div data-guess-grid className="guess-grid">
+        <div className="stats" style={{ top: showStats ? "5em" : "-17em" }}>
+          {/* <div className="stat-titles">
+
+             </div> */}
           <div
-            className="squirtle-talk"
-            id={comicBubbleDirection}
-            // ref={squirtleTalkRef}
+            className="stat-names"
+            onClick={(e) => {
+              handleClick(e.target);
+              setShowStats((showStats) => !showStats);
+            }}
           >
+            <div className="stat-header">YOUR 5 WORD STATS</div>
+            <div className="stat-info">THE DAILY 5</div>
+            <div className="stat-info">THE DAILY 5 90s</div>
+            <div className="stat-info">THE DAILY 5 60s</div>
+            <div className="stat-info">THE DAILY 5 30s</div>
+            <div className="stat-info">WIN STREAK</div>
+            <div className="stat-info">WIN STREAK 90s</div>
+            <div className="stat-info">WIN STREAK 60s</div>
+            <div className="stat-info">WIN STREAK 30s</div>
+          </div>
+          <div className="current-scores">
+            <div className="stat-title">LIVE</div>
+            <div className="stat-info">{stats.hiScore}</div>
+            <div className="stat-info">{stats.hiScore90}</div>
+            <div className="stat-info">{stats.hiScore60}</div>
+            <div className="stat-info">{stats.hiScore30}</div>
+            <div className="stat-info">{streaks.streak}</div>
+            <div className="stat-info">{streaks.streak90}</div>
+            <div className="stat-info">{streaks.streak60}</div>
+            <div className="stat-info">{streaks.streak30}</div>
+          </div>
+          <div className="hi-scores">
+            <div className="stat-title">BEST</div>
+            <div className="stat-info">{stats.allTimeHiScore}</div>
+            <div className="stat-info">{stats.allTimeHiScore90}</div>
+            <div className="stat-info">{stats.allTimeHiScore60}</div>
+            <div className="stat-info">{stats.allTimeHiScore30}</div>
+            <div className="stat-info">{streaks.allTimeStreak}</div>
+            <div className="stat-info">{streaks.allTimeStreak90}</div>
+            <div className="stat-info">{streaks.allTimeStreak60}</div>
+            <div className="stat-info">{streaks.allTimeStreak30}</div>
+          </div>
+        </div>
+        <div data-guess-grid className="guess-grid">
+          <div className="squirtle-talk" id={comicBubbleDirection}>
             <div className="squirtle-language">SQUIRTLE squirtle!!!</div>
             <div className="subtitles">{subtitles}</div>
           </div>
@@ -16641,12 +16472,7 @@ export const App = () => {
           })}
         </div>
         <div data-keyboard className="keyboard">
-          <div
-            className="squirtle"
-            id={squirtleStatus}
-            // ref={squirtleAnimationRef}
-          ></div>
-          {/* <div className="squirtle" ref={squirtleMadRef}></div> */}
+          <div className="squirtle" id={squirtleStatus}></div>
           {keyRows[0].map((letter, index) => {
             return index % 2 === 0 ? (
               <button

@@ -38,8 +38,122 @@ body {
   align-items: flex-end;
 }
 
+.game-size {
+  position: fixed;
+  z-index: 50;
+  cursor: pointer;
+  color: #038b9b;
+  right: 0.5em;
+  /* left: 58vw; */
+  /* left: calc(50vw + 4.3rem); */
+  top: 0.25em;
+  /* transform: translateY(8%); */
+  font-size: 1.4em;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 500;
+  width: 1.6em;
+  height: 1.6em;
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* color: #fff; */
+  /* border: 0.14em solid white; */
+  /* background-color: transparent; */
+  /* background-size: contain; */
+  /* background-repeat: no-repeat; */
+  /* background-image: url('./images/trophy.webp'); */
+}
+
+.fine {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8em;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight:400;
+}
+.bold {
+  font-size: 1.4em;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight:700;
+}
+
+
+.trophy-button {
+  position: fixed;
+  z-index: 50;
+  cursor: pointer;
+  right: 3em;
+  /* transform: translateY(5%); */
+  width: 2em;
+  height: 1.9em;
+  background-color: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('./images/trophy.webp');
+}
+
+.stats {
+  /* position: absolute; */
+  position: fixed;
+  top: -17em;
+  /* top: 5em; */
+  left: 50vw;
+  width: 17em;
+  height: 16em;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: grid;
+  justify-content: space-between;
+  align-content: center;
+  flex-grow: 1;
+  grid-template-columns: 9.5em 3em 3em;
+  /* grid-template-rows: repeat(6, 4em); */
+  gap: .25em;
+  /* flex-direction: column; */
+  background: linear-gradient(to top right, #01444cc5,40%, #01636ea4);
+  border-radius: 0.5em;
+  padding: .25em;
+  align-items: center;
+  filter:drop-shadow(-10px 10px 15px rgba(0, 0, 0, 0.4));
+  transition: top .4s ease-in-out
+}
+
+.stat-header {
+  font-size: 0.7em;
+  font-weight: 700;
+  color: white;
+  padding: .5em 1em;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.stat-title {
+  font-size: 0.7em;
+  font-weight: 600;
+  color: white;
+  padding: .5em .5em;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.stat-info {
+  /* text-align: center; */
+  color: white;
+  padding: .25em .5em;
+  font-weight: 500;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.current-scores {
+text-align: center;
+}
+.hi-scores {
+text-align: center;
+}
+
+
 .header {
   position: relative;
+  z-index: 35;
   display: flex;
   align-items: center;
   color:white;
@@ -52,6 +166,7 @@ body {
 .title {
   position: absolute;
   display: flex;
+  z-index: 35;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -78,7 +193,7 @@ body {
 }
 
 .timer-button {
-  z-index: 10;
+  z-index: 50;
   display: flex;
   position: fixed;
   width: 3.25em;
@@ -99,27 +214,15 @@ body {
 }
 
 .circle-timer {
-  z-index: 9;
-  /* position: relative; */
+  z-index: 49;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 2.05em;
   height: 2.05em;
-  /* left: 50vw; */
-  /* transform: translateX(-50%); */
-  /* border-radius: 50%; */
-  /* background-color: #0aacbe; */
-  /* border: 3px solid #ccc; */
 }
-/* .circle-timer::before {
-  position: relative;
-  width: 2em;
-  height: 2em;
-  border-radius: 50%;
-  border: 3px solid #ccc;
-} */
+
 
 .circle-timer-text {
   position: absolute;
@@ -134,7 +237,7 @@ body {
 
 .dailyNumber {
   position: absolute;
-  font-size: 0.8em;
+  font-size: 0.7em;
   font-weight: bold;
   font-family: Arial;
   top: 65%;
@@ -143,14 +246,16 @@ body {
 }
 
 #todays-word {
-  z-index: 5;
+  z-index: 50;
   cursor: pointer;
-  right: 0.3em;
+  top: 0.1em;
+  left: 2.2em;
+  /* right: 0.3em; */
 }
 
 .svg-icon {
-  width: 1.7em; 
-  height: 1.7em;
+  width: 1.65em; 
+  height: 1.65em;
   vertical-align: middle;
   fill: transparent;
   overflow: hidden;
@@ -223,6 +328,15 @@ body {
   align-content: center;
   flex-grow: 1;
   grid-template-columns: repeat(5, 4em);
+  grid-template-rows: repeat(6, 4em);
+  gap: .25em;
+}
+.guess-grid6 {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  flex-grow: 1;
+  grid-template-columns: repeat(6, 4em);
   grid-template-rows: repeat(6, 4em);
   gap: .25em;
 }
