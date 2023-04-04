@@ -16139,8 +16139,8 @@ export const App = () => {
     const dayOffset = Math.ceil(msOffset / 1000 / 60 / 60 / 24) * 5;
     const offSetByGameCount = () => {
       let i = data.game + dayOffset;
-      while (i > 2300) {
-        i = i - 2300;
+      while (i > 2310) {
+        i = i - 2310;
       }
       return i;
     };

@@ -11114,8 +11114,8 @@ export const App6 = () => {
     const dayOffset = Math.ceil(msOffset / 1000 / 60 / 60 / 24) * 5;
     const offSetByGameCount = () => {
       let i = data.game + dayOffset;
-      while (i > 2300) {
-        i = i - 2300;
+      while (i > 5125) {
+        i = i - 5125;
       }
       return i;
     };
@@ -11258,7 +11258,7 @@ export const App6 = () => {
               newTilesWin[i][index] = "";
               newTilesWin[i][index - 1] = "";
               i === 0 &&
-                index === 9 &&
+                index === 11 &&
                 resetGame(score, timerSwitch, todaysGameSwitch) &&
                 console.log("has reset");
               return setTiles([...newTilesWin]);
@@ -11294,7 +11294,7 @@ export const App6 = () => {
               newTilesWin[i][index] = "";
               newTilesWin[i][index - 1] = "";
               i === 0 &&
-                index === 9 &&
+                index === 11 &&
                 resetGame(0, timerSwitch, todaysGameSwitch) &&
                 console.log("has reset");
               return setTiles([...newTilesWin]);
