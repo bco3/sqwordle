@@ -15578,6 +15578,20 @@ export const App = () => {
     comicBubbleInOut(2000);
   }, []);
 
+  function restartGame() {
+    setTiles(defaultTiles);
+    setKeyRows(defaultKeyRows);
+    setPosition(defaultPosition);
+    setWord(defaultWord);
+    setTimerDelay(defaultTimerDelay);
+    setTimerSwitch(defaultTimerSwitch);
+    setSubtitles("Let's try this again");
+    setSquirtleStatus("new-game");
+    setComicBubbleDirection("talk-left");
+    squirtleInOut(2000);
+    comicBubbleInOut(2000);
+  }
+
   function nextLine() {
     if (position.row !== 5) {
       let newPosition = { ...position };
@@ -16407,7 +16421,7 @@ export const App = () => {
         </div>
       </div>
       <div className="under-header-container">
-        <div className="stats" style={{ top: showStats ? "5em" : "-17em" }}>
+        <div className="stats" style={{ top: showStats ? "5em" : "-19em" }}>
           <div
             className="stat-names"
             onClick={(e) => {
@@ -16446,6 +16460,15 @@ export const App = () => {
             <div className="stat-info">{streaks.allTimeStreak90}</div>
             <div className="stat-info">{streaks.allTimeStreak60}</div>
             <div className="stat-info">{streaks.allTimeStreak30}</div>
+          </div>
+          <div
+            className="restart"
+            onClick={(e) => {
+              handleClick(e.target);
+              restartGame();
+            }}
+          >
+            RESTART
           </div>
         </div>
         <div data-guess-grid className="guess-grid">

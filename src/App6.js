@@ -10553,6 +10553,20 @@ export const App6 = () => {
     comicBubbleInOut(2000);
   }, []);
 
+  function restartGame() {
+    setTiles(defaultTiles);
+    setKeyRows(defaultKeyRows);
+    setPosition(defaultPosition);
+    setWord(defaultWord);
+    setTimerDelay(defaultTimerDelay);
+    setTimerSwitch(defaultTimerSwitch);
+    setSubtitles("Let's try this again");
+    setSquirtleStatus("new-game");
+    setComicBubbleDirection("talk-left");
+    squirtleInOut(2000);
+    comicBubbleInOut(2000);
+  }
+
   function nextLine() {
     if (position.row !== 5) {
       let newPosition = { ...position };
@@ -11428,6 +11442,15 @@ export const App6 = () => {
             <div className="stat-info">{streaks.allTimeStreak90}</div>
             <div className="stat-info">{streaks.allTimeStreak60}</div>
             <div className="stat-info">{streaks.allTimeStreak30}</div>
+          </div>
+          <div
+            className="restart"
+            onClick={(e) => {
+              handleClick(e.target);
+              restartGame();
+            }}
+          >
+            RESTART
           </div>
         </div>
         <div data-guess-grid className="guess-grid6">

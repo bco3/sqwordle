@@ -95,14 +95,31 @@ body {
   background-image: url('./images/trophy.webp');
 }
 
+.restart {
+  position: relative;
+  z-index: 50;
+  cursor: pointer;
+  /* left: 50vw; */
+  transform: translateX(-50%);
+  font-family: Arial, Helvetica, sans-serif;
+  color: #038b9b;
+  font-size: 0.8em;
+  font-weight:700;
+  padding:0.2em 0.4em;
+  margin: 0.2em;
+  border-radius: 0.5em;
+  background-color: white;
+  justify-self: center;
+}
+
 .stats {
   /* position: absolute; */
   position: fixed;
-  top: -17em;
+  top: -19em;
   /* top: 5em; */
   left: 50vw;
   width: 17em;
-  height: 16em;
+  height: 17.7em;
   transform: translateX(-50%);
   z-index: 30;
   display: grid;
