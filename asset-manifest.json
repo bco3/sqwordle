@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/sqwordle/static/css/main.b9381667.css",
-    "main.js": "/sqwordle/static/js/main.57c7a998.js",
+    "main.js": "/sqwordle/static/js/main.59380cdd.js",
     "static/media/squirtle-new-game.webp": "/sqwordle/static/media/squirtle-new-game.ab6bf7771a801b1b66dc.webp",
     "static/media/squirtle-mad.webp": "/sqwordle/static/media/squirtle-mad.a9977ee0118d6dba8ef8.webp",
     "static/media/squirtle-sad.webp": "/sqwordle/static/media/squirtle-sad.0c786f1971c02d5a9a22.webp",
@@ -17,10 +17,10 @@
     "static/media/timer-on.webp": "/sqwordle/static/media/timer-on.8bbee9ff9d384fb8b2b4.webp",
     "index.html": "/sqwordle/index.html",
     "main.b9381667.css.map": "/sqwordle/static/css/main.b9381667.css.map",
-    "main.57c7a998.js.map": "/sqwordle/static/js/main.57c7a998.js.map"
+    "main.59380cdd.js.map": "/sqwordle/static/js/main.59380cdd.js.map"
   },
   "entrypoints": [
     "static/css/main.b9381667.css",
-    "static/js/main.57c7a998.js"
+    "static/js/main.59380cdd.js"
   ]
 }
